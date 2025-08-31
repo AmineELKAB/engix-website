@@ -18,7 +18,6 @@
   "author": "Engix",
   "license": "MIT",
   "devDependencies": {},
-  "dependencies": {},
   "engines": {
     "node": ">=14.0.0"
   }

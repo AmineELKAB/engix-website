@@ -5,6 +5,10 @@ const closeModal = document.getElementById('closeModal');
 const contactForm = document.getElementById('contactForm');
 const loadingSpinner = document.getElementById('loadingSpinner');
 
+// Rate limiting for form submission
+let lastSubmissionTime = 0;
+const SUBMISSION_COOLDOWN = 5000; // 5 seconds
+
 // Event Listeners
 contactRequest.addEventListener('click', openModal);
 closeModal.addEventListener('click', closeModalFunc);
@@ -98,13 +102,21 @@ function showMessage(message, type = 'success') {
 async function handleFormSubmit(e) {
     e.preventDefault();
     
+    // Rate limiting check
+    const now = Date.now();
+    if (now - lastSubmissionTime < SUBMISSION_COOLDOWN) {
+        showMessage('Please wait a few seconds before submitting again.', 'error');
+        return;
+    }
+    
     // Get form data
     const formData = new FormData(contactForm);
     const data = {
         name: formData.get('name'),
         email: formData.get('email'),
         phone: formData.get('phone'),
-        request: formData.get('request')
+        request: formData.get('request'),
+        website: formData.get('website') // Honeypot field
     };
 
     // Basic validation
@@ -118,6 +130,14 @@ async function handleFormSubmit(e) {
         return;
     }
 
+    // Honeypot validation (spam protection)
+    if (data.website && data.website.trim() !== '') {
+        console.log('Spam detected via honeypot field');
+        showMessage('Your request has been sent successfully! We\'ll get back to you soon.');
+        closeModalFunc();
+        return;
+    }
+
     try {
         showLoading();
         
@@ -127,6 +147,7 @@ async function handleFormSubmit(e) {
         // Success
         showMessage('Your request has been sent successfully! We\'ll get back to you soon.');
         closeModalFunc();
+        lastSubmissionTime = now; // Update submission time
         
     } catch (error) {
         console.error('Form submission error:', error);
@@ -157,9 +178,26 @@ async function submitForm(data) {
     });
     
     // TODO: Replace with actual API call
-    // Example with fetch:
+    // Example with SendGrid:
     /*
     const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    });
+    
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    
+    return response.json();
+    */
+    
+    // Alternative: Formspree integration
+    /*
+    const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

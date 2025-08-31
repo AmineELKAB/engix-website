@@ -28,7 +28,7 @@
             <!-- Image 1 - Contact Request -->
             <div class="service-card contact-request" id="contactRequest">
                 <div class="image-container">
-                    <img src="images/contact-ai-modified.jpg" alt="Contact for deep dive" class="service-image">
+                    <iframe src="images/contact-placeholder.html" alt="Contact for deep dive" class="service-image" frameborder="0" scrolling="no"></iframe>
                     <div class="image-overlay">
                         <span class="overlay-text">Click to request a deep dive</span>
                     </div>
@@ -38,7 +38,7 @@
             <!-- Image 2 - Product & Process Development -->
             <div class="service-card product-development">
                 <div class="image-container">
-                    <img src="images/product-development.jpg" alt="Product and process development" class="service-image">
+                    <iframe src="images/product-development-placeholder.html" alt="Product and process development" class="service-image" frameborder="0" scrolling="no"></iframe>
                     <div class="image-overlay">
                         <h3 class="service-title">Product and process development & optimization</h3>
                         <div class="service-description">
@@ -53,7 +53,7 @@
             <!-- Image 3 - Technical Assistance -->
             <div class="service-card technical-assistance">
                 <div class="image-container">
-                    <img src="images/technical-assistance.jpg" alt="Technical assistance" class="service-image">
+                    <iframe src="images/technical-assistance-placeholder.html" alt="Technical assistance" class="service-image" frameborder="0" scrolling="no"></iframe>
                     <div class="image-overlay">
                         <h3 class="service-title">Technical assistance for your projects</h3>
                         <div class="service-description">
@@ -88,6 +88,10 @@
                 <div class="form-group">
                     <label for="request">Request *</label>
                     <textarea id="request" name="request" rows="4" required></textarea>
+                </div>
+                <!-- Honeypot field for spam protection -->
+                <div class="form-group" style="display: none;">
+                    <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
                 </div>
                 <div class="form-group">
                     <button type="submit" class="submit-button">Send Request</button>
