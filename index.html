@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Engineering passion and AI for awesome projects worldwide. Product development, process optimization, and technical assistance.">
+    <meta name="keywords" content="engineering, AI, product development, process optimization, technical assistance">
+    <meta name="author" content="Engix">
+    <title>Engix - Engineering Excellence with AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Fixed Header -->
+    <header class="fixed-header">
+        <div class="header-content">
+            <h1 class="main-message">Engineering passion and AI for awesome projects worldwide</h1>
+            <p class="secondary-message">Combining the power of AI and human engineering expertise makes our deliverables quick, robust and cost efficient</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Clickable Images Section -->
+        <section class="services-section">
+            <!-- Image 1 - Contact Request -->
+            <div class="service-card contact-request" id="contactRequest">
+                <div class="image-container">
+                    <img src="images/contact-ai-modified.jpg" alt="Contact for deep dive" class="service-image">
+                    <div class="image-overlay">
+                        <span class="overlay-text">Click to request a deep dive</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image 2 - Product & Process Development -->
+            <div class="service-card product-development">
+                <div class="image-container">
+                    <img src="images/product-development.jpg" alt="Product and process development" class="service-image">
+                    <div class="image-overlay">
+                        <h3 class="service-title">Product and process development & optimization</h3>
+                        <div class="service-description">
+                            <p>You need engineering support for the full development cycle or only an early prototyping?</p>
+                            <p>You need to optimize an existing product cost or performance?</p>
+                            <p>We can support design, simulation, testing and serial production launch, covering mechanical, electrical, electronics, software and AI systems.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image 3 - Technical Assistance -->
+            <div class="service-card technical-assistance">
+                <div class="image-container">
+                    <img src="images/technical-assistance.jpg" alt="Technical assistance" class="service-image">
+                    <div class="image-overlay">
+                        <h3 class="service-title">Technical assistance for your projects</h3>
+                        <div class="service-description">
+                            <p>You are delivering technical products and need efficient assistance to make your customers happy?</p>
+                            <p>You are running a production plant and need on-site or remote support?</p>
+                            <p>We can offer your customers a great experience, relying on professional tools and indicators.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Contact Form Modal -->
+    <div class="modal" id="contactModal">
+        <div class="modal-content">
+            <span class="close-button" id="closeModal">&times;</span>
+            <h2>Request a Deep Dive</h2>
+            <form id="contactForm" class="contact-form">
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">WhatsApp / Phone Number</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="request">Request *</label>
+                    <textarea id="request" name="request" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="submit-button">Send Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

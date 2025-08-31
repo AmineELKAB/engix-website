@@ -1,0 +1,25 @@
+{
+  "name": "engix-website",
+  "version": "1.0.0",
+  "description": "Engineering passion and AI for awesome projects worldwide",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "engineering",
+    "AI",
+    "product-development",
+    "technical-assistance",
+    "website"
+  ],
+  "author": "Engix",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
