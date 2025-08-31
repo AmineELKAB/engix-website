@@ -1,0 +1,59 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build and optimize
+      run: |
+        # Create optimized build directory
+        mkdir -p dist
+        
+        # Copy and optimize HTML
+        cp index.html dist/
+        sed -i 's/\.js"/\.js?v='$(date +%s)'"/g' dist/index.html
+        
+        # Copy and optimize CSS
+        cp styles.css dist/
+        
+        # Copy and optimize JavaScript
+        cp script.js dist/
+        cp config.js dist/
+        cp performance.js dist/
+        
+        # Copy images
+        cp -r images dist/
+        
+        # Copy service worker
+        cp sw.js dist/
+        
+        # Copy documentation
+        cp README.md dist/
+        cp FORM_SETUP.md dist/
+        
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+        cname: engix.dev
