@@ -7,7 +7,7 @@ const loadingSpinner = document.getElementById('loadingSpinner');
 
 // Rate limiting for form submission
 let lastSubmissionTime = 0;
-const SUBMISSION_COOLDOWN = 5000; // 5 seconds
+const SUBMISSION_COOLDOWN = CONFIG.form.validation.rateLimitMs;
 
 // Event Listeners
 contactRequest.addEventListener('click', openModal);
@@ -130,6 +130,12 @@ async function handleFormSubmit(e) {
         return;
     }
 
+    // Check request length
+    if (data.request.length > CONFIG.form.validation.maxRequestLength) {
+        showMessage(`Request is too long. Maximum ${CONFIG.form.validation.maxRequestLength} characters allowed.`, 'error');
+        return;
+    }
+
     // Honeypot validation (spam protection)
     if (data.website && data.website.trim() !== '') {
         console.log('Spam detected via honeypot field');
@@ -163,54 +169,59 @@ function isValidEmail(email) {
 }
 
 async function submitForm(data) {
-    // This is a placeholder function - replace with actual API endpoint
-    // For now, we'll simulate a network request
-    
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // Simulate 90% success rate
-            if (Math.random() > 0.1) {
-                resolve({ success: true });
-            } else {
-                reject(new Error('Network error'));
+    if (CONFIG.form.formspree.enabled) {
+        // Formspree integration
+        try {
+            const response = await fetch(CONFIG.form.formspree.endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: data.name,
+                    email: data.email,
+                    phone: data.phone,
+                    request: data.request,
+                    subject: 'New Deep Dive Request from ' + data.name,
+                    _replyto: data.email, // This ensures sender gets confirmation
+                    _subject: 'Deep Dive Request Confirmation'
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        }, 1500);
-    });
-    
-    // TODO: Replace with actual API call
-    // Example with SendGrid:
-    /*
-    const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    });
-    
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
+            
+            return response.json();
+            
+        } catch (error) {
+            console.error('Formspree submission error:', error);
+            throw error;
+        }
+    } else if (CONFIG.form.sendgrid.enabled) {
+        // SendGrid integration
+        try {
+            const response = await fetch(CONFIG.form.sendgrid.endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            return response.json();
+            
+        } catch (error) {
+            console.error('SendGrid submission error:', error);
+            throw error;
+        }
+    } else {
+        throw new Error('No form handler configured');
     }
-    
-    return response.json();
-    */
-    
-    // Alternative: Formspree integration
-    /*
-    const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    });
-    
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    
-    return response.json();
-    */
 }
 
 // Add smooth scrolling for better UX
