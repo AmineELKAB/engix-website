@@ -10,6 +10,10 @@ body {
     line-height: 1.6;
     color: #333;
     background-color: #f8fafc;
+    /* Performance optimizations */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 /* Fixed Header */
@@ -56,7 +60,9 @@ body {
 .services-section {
     max-width: 1200px;
     margin: 0 auto;
+    display: -ms-grid;
     display: grid;
+    -ms-grid-columns: repeat(auto-fit, minmax(350px, 1fr));
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 2rem;
     padding: 2rem 0;
@@ -71,11 +77,17 @@ body {
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
+    /* Performance optimizations */
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .service-card:hover {
-    transform: translateY(-8px);
+    transform: translate3d(0, -8px, 0);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    /* Performance optimization for hover state */
+    will-change: transform, box-shadow;
 }
 
 .image-container {
@@ -89,6 +101,10 @@ body {
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
+    /* Performance optimizations */
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 /* Handle iframe placeholders */
@@ -149,6 +165,7 @@ iframe.service-image {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 .modal-content {
@@ -244,8 +261,10 @@ iframe.service-image {
 }
 
 .submit-button:hover {
-    transform: translateY(-2px);
+    transform: translate3d(0, -2px, 0);
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    /* Performance optimization */
+    will-change: transform, box-shadow;
 }
 
 .submit-button:active {

@@ -3,14 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Engineering passion and AI for awesome projects worldwide. Product development, process optimization, and technical assistance.">
-    <meta name="keywords" content="engineering, AI, product development, process optimization, technical assistance">
+    <meta name="description" content="Engineering passion and AI for awesome projects worldwide. Product development, process optimization, and technical assistance. Get expert engineering support for mechanical, electrical, electronics, software and AI systems.">
+    <meta name="keywords" content="engineering, AI, product development, process optimization, technical assistance, mechanical engineering, electrical engineering, software engineering, AI systems, prototyping, cost optimization">
     <meta name="author" content="Engix">
-    <title>Engix - Engineering Excellence with AI</title>
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://engix.dev/">
+    <meta property="og:title" content="Engix - Engineering Excellence with AI">
+    <meta property="og:description" content="Engineering passion and AI for awesome projects worldwide. Product development, process optimization, and technical assistance.">
+    <meta property="og:image" content="https://engix.dev/images/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://engix.dev/">
+    <meta property="twitter:title" content="Engix - Engineering Excellence with AI">
+    <meta property="twitter:description" content="Engineering passion and AI for awesome projects worldwide. Product development, process optimization, and technical assistance.">
+    <meta property="twitter:image" content="https://engix.dev/images/og-image.jpg">
+    
+    <title>Engix - Engineering Excellence with AI | Product Development & Technical Assistance</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Engix",
+        "url": "https://engix.dev",
+        "logo": "https://engix.dev/images/logo.png",
+        "description": "Engineering passion and AI for awesome projects worldwide. We provide product development, process optimization, and technical assistance services.",
+        "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "Worldwide"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "availableLanguage": "English"
+        },
+        "sameAs": [
+            "https://linkedin.com/company/engix",
+            "https://twitter.com/engix"
+        ],
+        "serviceType": [
+            "Product Development",
+            "Process Optimization", 
+            "Technical Assistance",
+            "AI Systems Integration"
+        ]
+    }
+    </script>
 </head>
 <body>
     <!-- Fixed Header -->
@@ -106,6 +156,22 @@
     </div>
 
     <script src="config.js"></script>
+    <script src="performance.js"></script>
     <script src="script.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
