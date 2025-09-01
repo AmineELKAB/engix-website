@@ -4,8 +4,8 @@
   "description": "Engineering passion and AI for awesome projects worldwide",
   "main": "index.html",
   "scripts": {
-    "start": "python -m http.server 8000",
-    "dev": "python -m http.server 8000",
+    "start": "npx http-server -p 8000 -o",
+    "dev": "npx http-server -p 8000 -o",
     "build": "node build.js",
     "test": "echo \"No tests specified\" && exit 0"
   },
@@ -18,7 +18,9 @@
   ],
   "author": "Engix",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
   "engines": {
     "node": ">=14.0.0"
   }

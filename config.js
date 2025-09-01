@@ -4,7 +4,7 @@ const CONFIG = {
     form: {
         // Formspree configuration (free form handling service)
         formspree: {
-            endpoint: 'https://formspree.io/f/YOUR_FORM_ID', // Replace with your actual form ID
+            endpoint: 'https://formspree.io/f/mldwnoww', // Real form endpoint
             enabled: true
         },
         
@@ -15,6 +15,8 @@ const CONFIG = {
             apiKey: 'YOUR_SENDGRID_API_KEY' // Replace with your actual API key
         },
         
+
+        
         // Form validation settings
         validation: {
             rateLimitMs: 5000, // 5 seconds between submissions
@@ -24,7 +26,7 @@ const CONFIG = {
     
     // Email notification settings
     email: {
-        ownerEmail: 'your-email@example.com', // Replace with your actual email
+        ownerEmail: 'elkabiri.amine@gmail.com', // Real form owner email
         subjectPrefix: '[Engix] ',
         autoReply: true
     },

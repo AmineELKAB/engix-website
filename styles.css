@@ -6,26 +6,26 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', sans-serif !important;
     line-height: 1.6;
     color: #333;
-    background-color: #f8fafc;
+    background-color: transparent;
     /* Performance optimizations */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
 }
 
-/* Fixed Header */
+/* Force font on all elements */
+* {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', sans-serif !important;
+}
+
+/* Header */
 .fixed-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: transparent;
+    color: black;
     padding: 1rem 0;
-    z-index: 1000;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -53,34 +53,44 @@ body {
 
 /* Main Content */
 .main-content {
-    margin-top: 120px;
-    padding: 2rem;
+    padding: 1rem;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .services-section {
-    max-width: 1200px;
+    width: 100%;
+    max-width: 1400px;
     margin: 0 auto;
-    display: -ms-grid;
     display: grid;
-    -ms-grid-columns: repeat(auto-fit, minmax(350px, 1fr));
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    padding: 2rem 0;
+    padding: 2rem;
+    align-items: stretch;
 }
 
 /* Service Cards */
 .service-card {
-    background: white;
+    background: transparent;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    cursor: pointer;
+    cursor: default;
     position: relative;
+    width: 100%;
+    height: 100%;
     /* Performance optimizations */
     will-change: transform;
     transform: translateZ(0);
     backface-visibility: hidden;
+}
+
+/* Show pointer cursor only for contact request */
+.service-card.contact-request {
+    cursor: pointer;
 }
 
 .service-card:hover {
@@ -92,8 +102,10 @@ body {
 
 .image-container {
     position: relative;
-    height: 300px;
+    height: 400px;
     overflow: hidden;
+    border-radius: 16px;
+    width: 100%;
 }
 
 .service-image {
@@ -101,6 +113,8 @@ body {
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
+    border: none;
+    display: block;
     /* Performance optimizations */
     will-change: transform;
     transform: translateZ(0);
@@ -110,7 +124,10 @@ body {
 /* Handle iframe placeholders */
 iframe.service-image {
     border: none;
-    object-fit: none;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
 .service-card:hover .service-image {
@@ -119,14 +136,59 @@ iframe.service-image {
 
 .image-overlay {
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
     color: white;
-    padding: 2rem 1.5rem 1.5rem;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     transform: translateY(0);
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    overflow: hidden;
+    max-height: 100%;
+}
+
+/* Contact image text behavior */
+.overlay-text-default {
+    display: block;
+}
+
+.overlay-text-hover {
+    display: none;
+}
+
+.service-card.contact-request:hover .overlay-text-default {
+    display: none;
+}
+
+.service-card.contact-request:hover .overlay-text-hover {
+    display: block;
+}
+
+/* Hide overlay by default for product development and technical assistance */
+.service-card.product-development .image-overlay,
+.service-card.technical-assistance .image-overlay {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Show overlay on hover for product development and technical assistance */
+.service-card.product-development:hover .image-overlay,
+.service-card.technical-assistance:hover .image-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+.image-overlay > * {
+    max-width: 100%;
+    width: 100%;
 }
 
 .service-card:hover .image-overlay {
@@ -134,24 +196,40 @@ iframe.service-image {
 }
 
 .overlay-text {
-    font-size: 1.2rem;
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
     font-weight: 600;
     display: block;
     text-align: center;
+    line-height: 1.2;
+    margin: 0;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .service-title {
-    font-size: 1.3rem;
-    font-weight: 600;
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    font-weight: 700;
     margin-bottom: 1rem;
     line-height: 1.3;
+    text-align: center;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .service-description p {
     margin-bottom: 0.8rem;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    opacity: 0.9;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    line-height: 1.4;
+    opacity: 1;
+    text-align: center;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    font-weight: 500;
 }
 
 /* Modal Styles */
@@ -169,7 +247,7 @@ iframe.service-image {
 }
 
 .modal-content {
-    background-color: white;
+    background-color: transparent;
     margin: 5% auto;
     padding: 2rem;
     border-radius: 16px;
@@ -177,6 +255,7 @@ iframe.service-image {
     max-width: 500px;
     position: relative;
     animation: modalSlideIn 0.3s ease;
+    color: white;
 }
 
 @keyframes modalSlideIn {
@@ -197,17 +276,17 @@ iframe.service-image {
     font-size: 2rem;
     font-weight: bold;
     cursor: pointer;
-    color: #666;
+    color: white;
     transition: color 0.2s ease;
 }
 
 .close-button:hover {
-    color: #333;
+    color: #ccc;
 }
 
 .modal h2 {
     margin-bottom: 1.5rem;
-    color: #333;
+    color: white;
     font-size: 1.5rem;
     font-weight: 600;
 }
@@ -227,7 +306,7 @@ iframe.service-image {
 .form-group label {
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: #555;
+    color: white;
 }
 
 .form-group input,
@@ -300,28 +379,30 @@ iframe.service-image {
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+    .services-section {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 900px;
+    }
+}
+
 @media (max-width: 768px) {
     .main-content {
-        margin-top: 100px;
-        padding: 1rem;
+        padding: 0.5rem;
+        min-height: auto;
     }
     
     .services-section {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        padding: 1rem;
     }
     
-    .main-message {
-        font-size: 1.2rem;
+    .image-container {
+        height: 350px;
     }
     
-    .secondary-message {
-        font-size: 0.9rem;
-    }
-    
-    .header-content {
-        padding: 0 1rem;
-    }
+
     
     .modal-content {
         margin: 10% auto;
@@ -332,22 +413,44 @@ iframe.service-image {
     .image-container {
         height: 250px;
     }
-}
-
-@media (max-width: 480px) {
-    .main-message {
-        font-size: 1.1rem;
-    }
     
-    .secondary-message {
-        font-size: 0.85rem;
+    .image-overlay {
+        padding: 1.5rem 1rem;
     }
     
     .service-title {
-        font-size: 1.1rem;
+        font-size: clamp(1rem, 3.5vw, 1.4rem);
+        margin-bottom: 0.8rem;
     }
     
     .service-description p {
-        font-size: 0.9rem;
+        font-size: clamp(0.8rem, 2.5vw, 1rem);
+        margin-bottom: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .services-section {
+        padding: 0.5rem;
+        gap: 1rem;
+    }
+    
+    .image-container {
+        height: 300px;
+    }
+    
+    .image-overlay {
+        padding: 1rem 0.8rem;
+    }
+    
+    .service-title {
+        font-size: clamp(0.9rem, 4vw, 1.2rem);
+        margin-bottom: 0.6rem;
+    }
+    
+    .service-description p {
+        font-size: clamp(0.7rem, 3vw, 0.9rem);
+        margin-bottom: 0.6rem;
+        line-height: 1.3;
     }
 }

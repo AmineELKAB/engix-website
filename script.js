@@ -147,8 +147,10 @@ async function handleFormSubmit(e) {
     try {
         showLoading();
         
-        // Simulate API call (replace with actual endpoint)
+        // Submit to Formspree (owner notification)
         await submitForm(data);
+        
+
         
         // Success
         showMessage('Your request has been sent successfully! We\'ll get back to you soon.');
@@ -182,9 +184,7 @@ async function submitForm(data) {
                     email: data.email,
                     phone: data.phone,
                     request: data.request,
-                    subject: 'New Deep Dive Request from ' + data.name,
-                    _replyto: data.email, // This ensures sender gets confirmation
-                    _subject: 'Deep Dive Request Confirmation'
+                    subject: 'New Deep Dive Request from ' + data.name
                 })
             });
             
@@ -223,6 +223,8 @@ async function submitForm(data) {
         throw new Error('No form handler configured');
     }
 }
+
+
 
 // Add smooth scrolling for better UX
 document.addEventListener('DOMContentLoaded', () => {
