@@ -128,6 +128,19 @@ iframe.service-image {
     width: 100%;
     height: 100%;
     display: block;
+    /* Improve iframe rendering quality for JPG images */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: auto;
+    image-rendering: smooth;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    /* Force hardware acceleration */
+    will-change: transform;
+    backface-visibility: hidden;
+    /* Enhance image quality */
+    -webkit-filter: contrast(1.05) brightness(1.02);
+    filter: contrast(1.05) brightness(1.02);
 }
 
 .service-card:hover .service-image {
@@ -140,7 +153,7 @@ iframe.service-image {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.75);
     color: white;
     padding: 1.5rem 1rem;
     display: flex;
@@ -172,18 +185,33 @@ iframe.service-image {
     display: block;
 }
 
-/* Hide overlay by default for product development and technical assistance */
+/* Keep overlay always visible but hide text by default for product development and technical assistance */
 .service-card.product-development .image-overlay,
 .service-card.technical-assistance .image-overlay {
-    opacity: 0;
-    visibility: hidden;
-}
-
-/* Show overlay on hover for product development and technical assistance */
-.service-card.product-development:hover .image-overlay,
-.service-card.technical-assistance:hover .image-overlay {
     opacity: 1;
     visibility: visible;
+}
+
+/* Hide default text by default for product development and technical assistance */
+.service-card.product-development .overlay-text-default,
+.service-card.technical-assistance .overlay-text-default {
+    display: none;
+}
+
+.service-card.product-development .overlay-text-hover,
+.service-card.technical-assistance .overlay-text-hover {
+    display: none;
+}
+
+/* Hide default text and show hover text on hover for product development and technical assistance (same as Image1) */
+.service-card.product-development:hover .overlay-text-default,
+.service-card.technical-assistance:hover .overlay-text-default {
+    display: none;
+}
+
+.service-card.product-development:hover .overlay-text-hover,
+.service-card.technical-assistance:hover .overlay-text-hover {
+    display: block;
 }
 
 .image-overlay > * {
@@ -205,6 +233,54 @@ iframe.service-image {
     max-width: 100%;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    /* Enhanced text sharpness and rendering */
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
+    color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1;
+}
+
+.overlay-text p,
+.overlay-text-default p,
+.overlay-text-hover p {
+    margin-bottom: 0.8rem;
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
+    color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1;
+    /* Force consistent rendering */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', sans-serif !important;
+}
+
+/* Specific rule to ensure Image2 and Image3 text renders as crisp as Image1 */
+.service-card.product-development .overlay-text-hover p,
+.service-card.technical-assistance .overlay-text-hover p {
+    margin-bottom: 0.8rem !important;
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem) !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9) !important;
+    color: #ffffff !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+    font-feature-settings: "kern" 1 !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', sans-serif !important;
 }
 
 .service-title {
@@ -219,18 +295,7 @@ iframe.service-image {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
-.service-description p {
-    margin-bottom: 0.8rem;
-    font-size: clamp(0.9rem, 2vw, 1.1rem);
-    line-height: 1.4;
-    opacity: 1;
-    text-align: center;
-    max-width: 100%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-    font-weight: 500;
-}
+/* Removed service-description p rule - using overlay-text-default p instead */
 
 /* Modal Styles */
 .modal {
@@ -423,7 +488,7 @@ iframe.service-image {
         margin-bottom: 0.8rem;
     }
     
-    .service-description p {
+    .overlay-text-default p {
         font-size: clamp(0.8rem, 2.5vw, 1rem);
         margin-bottom: 0.7rem;
     }
@@ -448,7 +513,7 @@ iframe.service-image {
         margin-bottom: 0.6rem;
     }
     
-    .service-description p {
+    .overlay-text-default p {
         font-size: clamp(0.7rem, 3vw, 0.9rem);
         margin-bottom: 0.6rem;
         line-height: 1.3;
