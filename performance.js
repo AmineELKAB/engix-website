@@ -166,7 +166,7 @@ class PerformanceMonitor {
 
         // Preload critical images
         const criticalImages = [
-            'images/Image1.png?v=4',
+            'images/Image1.jpg?v=4',
             'images/Image2.jpg?v=4',
             'images/Image3.jpg?v=4'
         ];
