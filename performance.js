@@ -63,14 +63,24 @@ class PerformanceMonitor {
     }
 
     logMetrics() {
-        console.log('🚀 Performance Metrics:', {
+        const metrics = {
             'DOM Content Loaded': `${this.metrics.domContentLoaded?.toFixed(2)}ms`,
             'First Paint': `${this.metrics.firstPaint?.toFixed(2)}ms`,
             'First Contentful Paint': `${this.metrics.firstContentfulPaint?.toFixed(2)}ms`,
             'Largest Contentful Paint': `${this.metrics.largestContentfulPaint?.toFixed(2)}ms`,
             'Page Load Time': `${this.metrics.pageLoadTime?.toFixed(2)}ms`,
             'Total Time': `${this.metrics.totalTime?.toFixed(2)}ms`
-        });
+        };
+
+        // Add image loading times if available
+        if (this.metrics.imageLoadTimes) {
+            const imageTimes = Object.values(this.metrics.imageLoadTimes);
+            const avgImageTime = imageTimes.reduce((a, b) => a + b, 0) / imageTimes.length;
+            metrics['Average Image Load Time'] = `${avgImageTime.toFixed(2)}ms`;
+            metrics['Total Images Loaded'] = imageTimes.length;
+        }
+
+        console.log('🚀 Performance Metrics:', metrics);
 
         // Send metrics to analytics if available
         this.sendMetricsToAnalytics();
@@ -104,6 +114,38 @@ class PerformanceMonitor {
             // Add decoding="async" for better performance
             img.decoding = 'async';
         });
+
+        // Track iframe image loading performance
+        this.trackIframeImages();
+    }
+
+    // Track iframe image loading performance
+    trackIframeImages() {
+        const iframes = document.querySelectorAll('iframe[data-src]');
+        iframes.forEach(iframe => {
+            const startTime = performance.now();
+            const imageSrc = iframe.getAttribute('data-src');
+            
+            iframe.addEventListener('load', () => {
+                const loadTime = performance.now() - startTime;
+                console.log(`🖼️ Image ${imageSrc} loaded in ${loadTime.toFixed(2)}ms`);
+                
+                // Track in metrics
+                if (!this.metrics.imageLoadTimes) {
+                    this.metrics.imageLoadTimes = {};
+                }
+                this.metrics.imageLoadTimes[imageSrc] = loadTime;
+                
+                // Send to analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'image_load_time', {
+                        event_category: 'performance',
+                        event_label: imageSrc,
+                        value: Math.round(loadTime)
+                    });
+                }
+            });
+        });
     }
 
     // Preload critical resources
@@ -118,9 +160,24 @@ class PerformanceMonitor {
         // Preload critical CSS
         const cssLink = document.createElement('link');
         cssLink.rel = 'preload';
-        cssLink.href = 'styles.css';
+        cssLink.href = 'styles.css?v=3';
         cssLink.as = 'style';
         document.head.appendChild(cssLink);
+
+        // Preload critical images
+        const criticalImages = [
+            'images/Image1.png?v=4',
+            'images/Image2.jpg?v=4',
+            'images/Image3.jpg?v=4'
+        ];
+
+        criticalImages.forEach(src => {
+            const imageLink = document.createElement('link');
+            imageLink.rel = 'preload';
+            imageLink.as = 'image';
+            imageLink.href = src;
+            document.head.appendChild(imageLink);
+        });
     }
 }
 

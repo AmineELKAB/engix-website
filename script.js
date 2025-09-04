@@ -244,6 +244,83 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Image lazy loading and progressive loading
+class ImageLoader {
+    constructor() {
+        this.loadedImages = new Set();
+        this.initLazyLoading();
+    }
+
+    initLazyLoading() {
+        // Create intersection observer for lazy loading
+        const lazyObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    this.loadImage(entry.target);
+                    lazyObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            rootMargin: '50px 0px',
+            threshold: 0.1
+        });
+
+        // Observe all lazy-loaded iframes
+        document.addEventListener('DOMContentLoaded', () => {
+            const lazyImages = document.querySelectorAll('.lazy-load');
+            lazyImages.forEach(img => {
+                lazyObserver.observe(img);
+            });
+        });
+    }
+
+    async loadImage(iframe) {
+        const dataSrc = iframe.getAttribute('data-src');
+        if (!dataSrc || this.loadedImages.has(dataSrc)) return;
+
+        try {
+            // Show loading state
+            const loadingId = iframe.parentElement.querySelector('.image-loading');
+            if (loadingId) {
+                loadingId.style.display = 'flex';
+            }
+
+            // Preload the iframe content
+            const response = await fetch(dataSrc);
+            if (response.ok) {
+                // Set the src to trigger loading
+                iframe.src = dataSrc;
+                
+                // Wait for iframe to load
+                iframe.onload = () => {
+                    this.handleImageLoaded(iframe, loadingId);
+                };
+                
+                this.loadedImages.add(dataSrc);
+            }
+        } catch (error) {
+            console.error('Error loading image:', error);
+            this.handleImageLoaded(iframe, loadingId);
+        }
+    }
+
+    handleImageLoaded(iframe, loadingElement) {
+        // Hide loading state
+        if (loadingElement) {
+            loadingElement.classList.add('hidden');
+            setTimeout(() => {
+                loadingElement.style.display = 'none';
+            }, 300);
+        }
+
+        // Show iframe with fade-in effect
+        iframe.classList.add('loaded');
+    }
+}
+
+// Initialize image loader
+const imageLoader = new ImageLoader();
+
 // Add intersection observer for animations
 const observerOptions = {
     threshold: 0.1,

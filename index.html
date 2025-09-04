@@ -36,11 +36,16 @@
     
     <title>Engineering Passion & AI | Engix.dev – Reliable, Cost-Effective Technical Assistance</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
-    <link rel="stylesheet" href="styles.css?v=2">
+    <link rel="stylesheet" href="styles.css?v=3">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap&v=1" rel="stylesheet">
+    
+    <!-- Preload critical images for faster loading -->
+    <link rel="preload" as="image" href="images/Image1.png?v=4">
+    <link rel="preload" as="image" href="images/Image2.jpg?v=4">
+    <link rel="preload" as="image" href="images/Image3.jpg?v=4">
     
     <!-- Structured Data for SEO -->
     <script type="application/ld+json">
@@ -145,7 +150,11 @@
             <!-- Image 1 - Contact Request -->
             <article class="service-card contact-request" id="contactRequest">
                 <div class="image-container">
-                    <iframe src="images/contact-placeholder.html?v=2" alt="Engineering Excellence and AI-powered solutions" class="service-image" frameborder="0" scrolling="no"></iframe>
+                    <div class="image-loading" id="loading1">
+                        <div class="loading-spinner-small"></div>
+                        <p>Loading...</p>
+                    </div>
+                    <iframe data-src="images/contact-placeholder.html?v=4" alt="Engineering Excellence and AI-powered solutions" class="service-image lazy-load" frameborder="0" scrolling="no" loading="lazy"></iframe>
                     <div class="image-overlay">
                         <div class="overlay-text-default">
                             <h2><strong>Engineering Excellence</strong></h2>
@@ -164,7 +173,11 @@
             <!-- Image 2 - Product & Process Development -->
             <article class="service-card product-development">
                 <div class="image-container">
-                    <iframe src="images/product-development-placeholder.html?v=2" alt="Product and Process Development with Multi-disciplinary Engineering" class="service-image" frameborder="0" scrolling="no"></iframe>
+                    <div class="image-loading" id="loading2">
+                        <div class="loading-spinner-small"></div>
+                        <p>Loading...</p>
+                    </div>
+                    <iframe data-src="images/product-development-placeholder.html?v=4" alt="Product and Process Development with Multi-disciplinary Engineering" class="service-image lazy-load" frameborder="0" scrolling="no" loading="lazy"></iframe>
                     <div class="image-overlay">
                         <div class="overlay-text-default">
                             <h2><strong>Product & Process Development</strong></h2>
@@ -189,7 +202,11 @@
             <!-- Image 3 - Technical Assistance -->
             <article class="service-card technical-assistance">
                 <div class="image-container">
-                    <iframe src="images/technical-assistance-placeholder.html?v=2" alt="Technical Assistance and Expert Support for Engineering Projects" class="service-image" frameborder="0" scrolling="no"></iframe>
+                    <div class="image-loading" id="loading3">
+                        <div class="loading-spinner-small"></div>
+                        <p>Loading...</p>
+                    </div>
+                    <iframe data-src="images/technical-assistance-placeholder.html?v=4" alt="Technical Assistance and Expert Support for Engineering Projects" class="service-image lazy-load" frameborder="0" scrolling="no" loading="lazy"></iframe>
                     <div class="image-overlay">
                         <div class="overlay-text-default">
                             <h2><strong>Technical Assistance</strong></h2>
