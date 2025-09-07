@@ -5,6 +5,12 @@
     box-sizing: border-box;
 }
 
+/* Performance optimizations */
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', sans-serif !important;
     line-height: 1.6;
@@ -62,10 +68,10 @@ body {
 
 .services-section {
     width: 100%;
-    max-width: 1400px;
+    max-width: 1600px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
     padding: 2rem;
     align-items: stretch;
@@ -88,8 +94,9 @@ body {
     backface-visibility: hidden;
 }
 
-/* Show pointer cursor only for contact request */
-.service-card.contact-request {
+/* Show pointer cursor for contact request and deximind */
+.service-card.contact-request,
+.service-card.deximind-agent {
     cursor: pointer;
 }
 
@@ -191,6 +198,31 @@ iframe.service-image {
     filter: contrast(1.05) brightness(1.02);
 }
 
+/* Optimize image loading */
+img.service-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: auto;
+    image-rendering: smooth;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+/* Ensure DexiMind image loads immediately */
+.service-card.deximind-agent img.service-image {
+    opacity: 1;
+    display: block;
+}
+
+/* Hide loading spinner for DexiMind image */
+.service-card.deximind-agent .image-loading {
+    display: none !important;
+}
+
 .service-card:hover .service-image {
     transform: scale(1.05);
 }
@@ -225,11 +257,13 @@ iframe.service-image {
     display: none;
 }
 
-.service-card.contact-request:hover .overlay-text-default {
+.service-card.contact-request:hover .overlay-text-default,
+.service-card.deximind-agent:hover .overlay-text-default {
     display: none;
 }
 
-.service-card.contact-request:hover .overlay-text-hover {
+.service-card.contact-request:hover .overlay-text-hover,
+.service-card.deximind-agent:hover .overlay-text-hover {
     display: block;
 }
 
@@ -517,10 +551,17 @@ iframe.service-image {
 }
 
 /* Responsive Design */
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
+    .services-section {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 1200px;
+    }
+}
+
+@media (max-width: 1000px) {
     .services-section {
         grid-template-columns: repeat(2, 1fr);
-        max-width: 900px;
+        max-width: 800px;
     }
 }
 

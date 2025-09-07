@@ -1,5 +1,6 @@
 // DOM Elements
 const contactRequest = document.getElementById('contactRequest');
+const deximindCard = document.getElementById('deximindCard');
 const contactModal = document.getElementById('contactModal');
 const closeModal = document.getElementById('closeModal');
 const contactForm = document.getElementById('contactForm');
@@ -11,6 +12,7 @@ const SUBMISSION_COOLDOWN = CONFIG.form.validation.rateLimitMs;
 
 // Event Listeners
 contactRequest.addEventListener('click', openModal);
+deximindCard.addEventListener('click', openDexiMindPage);
 closeModal.addEventListener('click', closeModalFunc);
 contactModal.addEventListener('click', (e) => {
     if (e.target === contactModal) {
@@ -34,6 +36,11 @@ function openModal() {
     setTimeout(() => {
         document.getElementById('name').focus();
     }, 100);
+}
+
+function openDexiMindPage() {
+    // Navigate to DexiMind page
+    window.location.href = 'deximind.html';
 }
 
 function closeModalFunc() {
@@ -265,7 +272,7 @@ class ImageLoader {
             threshold: 0.1
         });
 
-        // Observe all lazy-loaded iframes
+        // Observe all lazy-loaded images and iframes
         document.addEventListener('DOMContentLoaded', () => {
             const lazyImages = document.querySelectorAll('.lazy-load');
             lazyImages.forEach(img => {
@@ -274,37 +281,49 @@ class ImageLoader {
         });
     }
 
-    async loadImage(iframe) {
-        const dataSrc = iframe.getAttribute('data-src');
-        if (!dataSrc || this.loadedImages.has(dataSrc)) return;
+    async loadImage(element) {
+        const dataSrc = element.getAttribute('data-src');
+        const src = element.getAttribute('src');
+        const imageSrc = dataSrc || src;
+        
+        if (!imageSrc || this.loadedImages.has(imageSrc)) return;
 
         try {
             // Show loading state
-            const loadingId = iframe.parentElement.querySelector('.image-loading');
+            const loadingId = element.parentElement.querySelector('.image-loading');
             if (loadingId) {
                 loadingId.style.display = 'flex';
             }
 
-            // Preload the iframe content
-            const response = await fetch(dataSrc);
-            if (response.ok) {
-                // Set the src to trigger loading
-                iframe.src = dataSrc;
-                
-                // Wait for iframe to load
-                iframe.onload = () => {
-                    this.handleImageLoaded(iframe, loadingId);
+            // Handle iframe loading
+            if (element.tagName === 'IFRAME') {
+                const response = await fetch(imageSrc);
+                if (response.ok) {
+                    element.src = imageSrc;
+                    element.onload = () => {
+                        this.handleImageLoaded(element, loadingId);
+                    };
+                    this.loadedImages.add(imageSrc);
+                }
+            } 
+            // Handle regular image loading
+            else if (element.tagName === 'IMG') {
+                element.onload = () => {
+                    this.handleImageLoaded(element, loadingId);
                 };
-                
-                this.loadedImages.add(dataSrc);
+                element.onerror = () => {
+                    console.error('Error loading image:', imageSrc);
+                    this.handleImageLoaded(element, loadingId);
+                };
+                this.loadedImages.add(imageSrc);
             }
         } catch (error) {
             console.error('Error loading image:', error);
-            this.handleImageLoaded(iframe, loadingId);
+            this.handleImageLoaded(element, loadingId);
         }
     }
 
-    handleImageLoaded(iframe, loadingElement) {
+    handleImageLoaded(element, loadingElement) {
         // Hide loading state
         if (loadingElement) {
             loadingElement.classList.add('hidden');
@@ -313,13 +332,40 @@ class ImageLoader {
             }, 300);
         }
 
-        // Show iframe with fade-in effect
-        iframe.classList.add('loaded');
+        // Show element with fade-in effect
+        element.classList.add('loaded');
     }
 }
 
 // Initialize image loader
 const imageLoader = new ImageLoader();
+
+// Ensure DexiMind image loads immediately
+document.addEventListener('DOMContentLoaded', () => {
+    const deximindImage = document.querySelector('.service-card.deximind-agent img.service-image');
+    if (deximindImage) {
+        console.log('DexiMind image found:', deximindImage.src);
+        deximindImage.style.opacity = '1';
+        deximindImage.classList.add('loaded');
+        
+        // Hide loading spinner
+        const loadingSpinner = document.querySelector('.service-card.deximind-agent .image-loading');
+        if (loadingSpinner) {
+            loadingSpinner.style.display = 'none';
+        }
+        
+        // Add error handling
+        deximindImage.onerror = () => {
+            console.error('Failed to load DexiMind image:', deximindImage.src);
+        };
+        
+        deximindImage.onload = () => {
+            console.log('DexiMind image loaded successfully');
+        };
+    } else {
+        console.error('DexiMind image not found');
+    }
+});
 
 // Add intersection observer for animations
 const observerOptions = {

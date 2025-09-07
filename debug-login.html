@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DexiMind Login Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .debug-output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <h1>DexiMind Login Debug Tool</h1>
+    <p>This tool helps debug login issues by showing what's stored in localStorage and testing authentication.</p>
+
+    <div class="debug-section">
+        <h2>1. Check Stored Data</h2>
+        <button class="button" onclick="showStoredData()">Show All Stored Data</button>
+        <div id="storedData" class="debug-output"></div>
+    </div>
+
+    <div class="debug-section">
+        <h2>2. Test Login</h2>
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" id="testEmail" placeholder="test@example.com">
+        </div>
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" id="testPassword" placeholder="password">
+        </div>
+        <button class="button" onclick="testLogin()">Test Login</button>
+        <div id="loginResult" class="debug-output"></div>
+    </div>
+
+    <div class="debug-section">
+        <h2>3. Create Test User</h2>
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" id="createEmail" placeholder="test@example.com" value="test@example.com">
+        </div>
+        <div class="form-group">
+            <label>Name:</label>
+            <input type="text" id="createName" placeholder="Test User" value="Test User">
+        </div>
+        <button class="button" onclick="createTestUser()">Create Test User</button>
+        <div id="createResult" class="debug-output"></div>
+    </div>
+
+    <div class="debug-section">
+        <h2>4. Clean Up Duplicates</h2>
+        <button class="button" onclick="cleanupDuplicates()">Clean Up Duplicate Users</button>
+        <div id="cleanupResult" class="debug-output"></div>
+    </div>
+
+    <div class="debug-section">
+        <h2>5. Clear All Data</h2>
+        <button class="button" onclick="clearAllData()">Clear All Data</button>
+        <div id="clearResult" class="debug-output"></div>
+    </div>
+
+    <script>
+        function showStoredData() {
+            const users = JSON.parse(localStorage.getItem('deximind_users') || '[]');
+            const currentUser = JSON.parse(localStorage.getItem('deximind_user') || 'null');
+            
+            let output = '=== STORED DATA ===\n\n';
+            output += `Stored Users (${users.length}):\n`;
+            users.forEach((user, index) => {
+                output += `${index + 1}. Email: ${user.email}\n`;
+                output += `   Password: ${user.password || 'NOT SET'}\n`;
+                output += `   Name: ${user.name}\n`;
+                output += `   Plan: ${user.plan}\n`;
+                output += `   Temporary: ${user.isTemporary || false}\n`;
+                output += `   Created: ${user.createdAt || 'Unknown'}\n\n`;
+            });
+            
+            output += `Current Logged-in User: ${currentUser ? `${currentUser.name} (${currentUser.email})` : 'None'}\n\n`;
+            
+            output += `All localStorage keys: ${Object.keys(localStorage).join(', ')}\n`;
+            
+            document.getElementById('storedData').textContent = output;
+        }
+
+        function testLogin() {
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+            
+            if (!email || !password) {
+                document.getElementById('loginResult').textContent = 'Please enter both email and password';
+                return;
+            }
+
+            // Test the authentication logic
+            const existingUsers = JSON.parse(localStorage.getItem('deximind_users') || '[]');
+            console.log('Available users:', existingUsers.map(u => ({ email: u.email, hasPassword: !!u.password })));
+            console.log('Attempting login with:', { email, passwordLength: password.length });
+            
+            const user = existingUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+            
+            let result = '=== LOGIN TEST ===\n\n';
+            result += `Searching for email: ${email}\n`;
+            result += `Found user: ${user ? 'YES' : 'NO'}\n\n`;
+            
+            if (!user) {
+                result += 'ERROR: User not found\n';
+                result += 'Available emails: ' + existingUsers.map(u => u.email).join(', ') + '\n';
+            } else {
+                result += `User details:\n`;
+                result += `  Email: ${user.email}\n`;
+                result += `  Password: ${user.password || 'NOT SET'}\n`;
+                result += `  Name: ${user.name}\n`;
+                result += `  Plan: ${user.plan}\n\n`;
+                
+                if (!user.password) {
+                    result += 'ERROR: No password set for this user\n';
+                } else if (user.password !== password) {
+                    result += `ERROR: Password mismatch\n`;
+                    result += `Expected: ${user.password}\n`;
+                    result += `Received: ${password}\n`;
+                } else {
+                    result += 'SUCCESS: Login should work!\n';
+                }
+            }
+            
+            document.getElementById('loginResult').textContent = result;
+        }
+
+        function createTestUser() {
+            const email = document.getElementById('createEmail').value;
+            const name = document.getElementById('createName').value;
+            
+            if (!email || !name) {
+                document.getElementById('createResult').textContent = 'Please enter both email and name';
+                return;
+            }
+
+            const tempPassword = generateTempPassword();
+            const newUser = {
+                id: 'user_' + Date.now(),
+                name: name,
+                email: email.toLowerCase().trim(),
+                phone: '',
+                plan: 'basic',
+                password: tempPassword,
+                createdAt: new Date().toISOString(),
+                isTemporary: true
+            };
+            
+            console.log('Creating new user:', { email: newUser.email, password: newUser.password });
+            
+            const existingUsers = JSON.parse(localStorage.getItem('deximind_users') || '[]');
+            const filteredUsers = existingUsers.filter(u => u.email.toLowerCase() !== newUser.email.toLowerCase());
+            filteredUsers.push(newUser);
+            
+            localStorage.setItem('deximind_users', JSON.stringify(filteredUsers));
+            
+            const verifyUsers = JSON.parse(localStorage.getItem('deximind_users') || '[]');
+            const storedUser = verifyUsers.find(u => u.email === newUser.email);
+            
+            let result = '=== CREATE USER TEST ===\n\n';
+            result += `Created user: ${storedUser ? 'SUCCESS' : 'FAILED'}\n`;
+            result += `Email: ${newUser.email}\n`;
+            result += `Password: ${newUser.password}\n`;
+            result += `Name: ${newUser.name}\n\n`;
+            
+            if (storedUser) {
+                result += 'User stored successfully!\n';
+                result += 'You can now test login with these credentials.\n';
+                
+                // Auto-fill the test form
+                document.getElementById('testEmail').value = newUser.email;
+                document.getElementById('testPassword').value = newUser.password;
+            } else {
+                result += 'ERROR: User was not stored properly\n';
+            }
+            
+            document.getElementById('createResult').textContent = result;
+        }
+
+        function cleanupDuplicates() {
+            const users = JSON.parse(localStorage.getItem('deximind_users') || '[]');
+            const emailGroups = {};
+            
+            // Group users by email
+            users.forEach(user => {
+                const email = user.email.toLowerCase();
+                if (!emailGroups[email]) {
+                    emailGroups[email] = [];
+                }
+                emailGroups[email].push(user);
+            });
+            
+            // Keep only the most recent user for each email
+            const cleanedUsers = [];
+            Object.values(emailGroups).forEach(group => {
+                const mostRecent = group.reduce((latest, current) => 
+                    new Date(current.createdAt || 0) > new Date(latest.createdAt || 0) ? current : latest
+                );
+                cleanedUsers.push(mostRecent);
+            });
+            
+            localStorage.setItem('deximind_users', JSON.stringify(cleanedUsers));
+            
+            let result = '=== CLEANUP DUPLICATES ===\n\n';
+            result += `Before: ${users.length} users\n`;
+            result += `After: ${cleanedUsers.length} users\n\n`;
+            
+            result += 'Remaining users:\n';
+            cleanedUsers.forEach((user, index) => {
+                result += `${index + 1}. ${user.email} (${user.password}) - ${user.createdAt}\n`;
+            });
+            
+            document.getElementById('cleanupResult').textContent = result;
+            showStoredData(); // Refresh the stored data display
+        }
+
+        function clearAllData() {
+            localStorage.removeItem('deximind_users');
+            localStorage.removeItem('deximind_user');
+            
+            document.getElementById('clearResult').textContent = 'All data cleared successfully!';
+            document.getElementById('storedData').textContent = '';
+            document.getElementById('loginResult').textContent = '';
+            document.getElementById('createResult').textContent = '';
+            document.getElementById('cleanupResult').textContent = '';
+        }
+
+        function generateTempPassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let password = '';
+            for (let i = 0; i < 8; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        }
+
+        // Show stored data on page load
+        window.onload = function() {
+            showStoredData();
+        };
+    </script>
+</body>
+</html>
