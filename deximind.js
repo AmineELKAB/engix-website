@@ -124,6 +124,13 @@ class DexiMindApp {
                 this.checkEmailAvailability(subscribeEmail.value);
             });
         }
+
+        // Handle window resize to maintain scrollbar prevention
+        window.addEventListener('resize', () => {
+            if (this.isLoggedIn) {
+                this.ensureScrollbarPrevention();
+            }
+        });
     }
 
     checkAuthStatus() {
@@ -133,6 +140,9 @@ class DexiMindApp {
             this.currentUser = JSON.parse(savedUser);
             this.isLoggedIn = true;
             this.showChatInterface();
+            // Ensure scrollbar prevention is applied on page load
+            document.documentElement.classList.add('chat-active');
+            document.body.classList.add('chat-active');
         }
     }
 
@@ -488,7 +498,8 @@ class DexiMindApp {
         if (productDescription && chatInterface) {
             productDescription.style.display = 'none';
             chatInterface.style.display = 'flex';
-            // Add class to prevent outer scrollbars
+            // Add class to prevent outer scrollbars on both html and body
+            document.documentElement.classList.add('chat-active');
             document.body.classList.add('chat-active');
         }
     }
@@ -646,7 +657,8 @@ class DexiMindApp {
         if (productDescription && chatInterface) {
             productDescription.style.display = 'block';
             chatInterface.style.display = 'none';
-            // Remove class to restore normal scrolling
+            // Remove class to restore normal scrolling on both html and body
+            document.documentElement.classList.remove('chat-active');
             document.body.classList.remove('chat-active');
         }
     }
@@ -688,6 +700,15 @@ class DexiMindApp {
                     warningDiv.remove();
                 }
             }
+        }
+    }
+
+    ensureScrollbarPrevention() {
+        if (this.isLoggedIn) {
+            document.documentElement.classList.add('chat-active');
+            document.body.classList.add('chat-active');
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
         }
     }
 

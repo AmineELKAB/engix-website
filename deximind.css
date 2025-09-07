@@ -2,7 +2,54 @@
 
 /* Prevent outer scrollbars when chat is active */
 body.chat-active {
-    overflow: hidden;
+    overflow: hidden !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    position: fixed !important;
+    width: 100% !important;
+}
+
+html.chat-active {
+    overflow: hidden !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    position: fixed !important;
+    width: 100% !important;
+}
+
+/* Additional scrollbar prevention - but keep chat messages scrollbar */
+.chat-active *:not(.chat-messages) {
+    scrollbar-width: none !important; /* Firefox */
+    -ms-overflow-style: none !important; /* IE and Edge */
+}
+
+.chat-active *:not(.chat-messages)::-webkit-scrollbar {
+    display: none !important; /* Chrome, Safari, Opera */
+}
+
+/* Ensure chat messages scrollbar is visible */
+.chat-messages {
+    scrollbar-width: thin !important; /* Firefox */
+    -ms-overflow-style: scrollbar !important; /* IE and Edge */
+}
+
+.chat-messages::-webkit-scrollbar {
+    display: block !important; /* Chrome, Safari, Opera */
+    width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
 }
 
 /* Background */
@@ -217,13 +264,15 @@ body.chat-active {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background: rgba(0, 0, 0, 0.9);
     z-index: 1000;
     display: flex;
     flex-direction: column;
     overflow: hidden; /* Prevent outer scrollbar */
+    max-width: 100vw;
+    max-height: 100vh;
 }
 
 .chat-controls {
@@ -315,7 +364,7 @@ body.chat-active {
 
 .chat-messages {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: auto !important;
     padding: 2rem 0;
     display: flex;
     flex-direction: column;
@@ -324,24 +373,6 @@ body.chat-active {
     scroll-behavior: smooth;
 }
 
-/* Custom scrollbar for chat messages */
-.chat-messages::-webkit-scrollbar {
-    width: 8px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-}
-
-.chat-messages::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
 
 .message {
     display: flex;
