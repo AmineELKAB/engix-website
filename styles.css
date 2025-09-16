@@ -218,6 +218,17 @@ img.service-image {
     display: block;
 }
 
+/* Make DexiMind card clearly clickable */
+.service-card.deximind-agent {
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card.deximind-agent:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3);
+}
+
 /* Hide loading spinner for DexiMind image */
 .service-card.deximind-agent .image-loading {
     display: none !important;

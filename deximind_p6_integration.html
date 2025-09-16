@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DexiMind P6 UI Integration Script</title>
+    <style>
+        /* DexiMind P6 UI Integration Styles */
+        #deximind-p6-ui {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-left: 2px solid rgba(255, 255, 255, 0.2);
+            z-index: 10000;
+            overflow-y: auto;
+            font-family: 'Inter', 'Roboto', sans-serif;
+            color: white;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        #deximind-p6-ui.collapsed {
+            transform: translateX(350px);
+        }
+
+        .deximind-p6-header {
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .deximind-p6-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .deximind-p6-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .deximind-p6-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .deximind-p6-content {
+            padding: 1rem;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .deximind-p6-section {
+            margin-bottom: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .deximind-p6-section h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .deximind-p6-section h3::before {
+            content: "📊";
+            font-size: 1.2rem;
+        }
+
+        .deximind-p6-section.task-queue h3::before { content: "📋"; }
+        .deximind-p6-section.system-status h3::before { content: "⚡"; }
+        .deximind-p6-section.performance h3::before { content: "📈"; }
+        .deximind-p6-section.emergency h3::before { content: "🚨"; }
+        .deximind-p6-section.notifications h3::before { content: "🔔"; }
+
+        .deximind-p6-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            box-sizing: border-box;
+        }
+
+        .deximind-p6-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .deximind-p6-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+
+        .deximind-p6-button {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .deximind-p6-button.primary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .deximind-p6-button.primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .deximind-p6-button.danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .deximind-p6-button.danger:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .deximind-p6-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .deximind-p6-task-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #007bff;
+            font-size: 0.85rem;
+        }
+
+        .deximind-p6-task-item.completed {
+            border-left-color: #28a745;
+        }
+
+        .deximind-p6-task-item.failed {
+            border-left-color: #dc3545;
+        }
+
+        .deximind-p6-task-item.running {
+            border-left-color: #ffc107;
+        }
+
+        .deximind-p6-task-command {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .deximind-p6-task-status {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+        }
+
+        .deximind-p6-task-progress {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 0.25rem;
+        }
+
+        .deximind-p6-task-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+
+        .deximind-p6-status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .deximind-p6-status-indicator.healthy { background: #28a745; }
+        .deximind-p6-status-indicator.warning { background: #ffc107; }
+        .deximind-p6-status-indicator.error { background: #dc3545; }
+        .deximind-p6-status-indicator.unknown { background: #6c757d; }
+
+        .deximind-p6-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
+        }
+
+        .deximind-p6-metric:last-child {
+            border-bottom: none;
+        }
+
+        .deximind-p6-metric-label {
+            opacity: 0.8;
+        }
+
+        .deximind-p6-metric-value {
+            font-weight: 600;
+        }
+
+        .deximind-p6-notification {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #007bff;
+            font-size: 0.85rem;
+        }
+
+        .deximind-p6-notification.critical {
+            border-left-color: #dc3545;
+            background: rgba(220, 53, 69, 0.2);
+        }
+
+        .deximind-p6-notification.warning {
+            border-left-color: #ffc107;
+            background: rgba(255, 193, 7, 0.2);
+        }
+
+        .deximind-p6-notification.info {
+            border-left-color: #17a2b8;
+            background: rgba(23, 162, 184, 0.2);
+        }
+
+        .deximind-p6-notification-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .deximind-p6-notification-message {
+            opacity: 0.9;
+            font-size: 0.8rem;
+        }
+
+        .deximind-p6-notification-time {
+            opacity: 0.6;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .deximind-p6-connection-status {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .deximind-p6-connection-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #dc3545;
+            animation: pulse 2s infinite;
+        }
+
+        .deximind-p6-connection-indicator.connected {
+            background: #28a745;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .deximind-p6-empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            opacity: 0.6;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #deximind-p6-ui {
+                width: 100vw;
+                right: 0;
+            }
+            
+            #deximind-p6-ui.collapsed {
+                transform: translateX(100vw);
+            }
+        }
+
+        /* Scrollbar Styling */
+        #deximind-p6-ui::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #deximind-p6-ui::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        #deximind-p6-ui::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        #deximind-p6-ui::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- DexiMind P6 UI Integration -->
+    <div id="deximind-p6-ui">
+        <div class="deximind-p6-header">
+            <h2 class="deximind-p6-title">DexiMind Control</h2>
+            <button class="deximind-p6-toggle" id="deximind-p6-toggle">−</button>
+        </div>
+        
+        <div class="deximind-p6-connection-status">
+            <div class="deximind-p6-connection-indicator" id="deximind-p6-connection-indicator"></div>
+            <span id="deximind-p6-connection-text">Connecting...</span>
+        </div>
+
+        <div class="deximind-p6-content">
+            <!-- Task Queue Section -->
+            <div class="deximind-p6-section task-queue">
+                <h3>Task Queue</h3>
+                <input type="text" class="deximind-p6-input" id="deximind-p6-command-input" placeholder="Enter your command (e.g., 'Click on submit button')">
+                <button class="deximind-p6-button primary" id="deximind-p6-submit-command">Submit Task</button>
+                <div id="deximind-p6-task-list">
+                    <div class="deximind-p6-empty-state">No active tasks</div>
+                </div>
+            </div>
+
+            <!-- System Status Section -->
+            <div class="deximind-p6-section system-status">
+                <h3>System Status</h3>
+                <div id="deximind-p6-status-display">
+                    <div class="deximind-p6-metric">
+                        <span class="deximind-p6-metric-label">
+                            <span class="deximind-p6-status-indicator unknown"></span>
+                            Overall Status
+                        </span>
+                        <span class="deximind-p6-metric-value" id="deximind-p6-overall-status">Unknown</span>
+                    </div>
+                    <div class="deximind-p6-metric">
+                        <span class="deximind-p6-metric-label">Active Tasks</span>
+                        <span class="deximind-p6-metric-value" id="deximind-p6-active-tasks">0</span>
+                    </div>
+                    <div class="deximind-p6-metric">
+                        <span class="deximind-p6-metric-label">Components</span>
+                        <span class="deximind-p6-metric-value" id="deximind-p6-components">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics Section -->
+            <div class="deximind-p6-section performance">
+                <h3>Performance</h3>
+                <div id="deximind-p6-metrics-display">
+                    <div class="deximind-p6-metric">
+                        <span class="deximind-p6-metric-label">CPU Usage</span>
+                        <span class="deximind-p6-metric-value" id="deximind-p6-cpu">0%</span>
+                    </div>
+                    <div class="deximind-p6-metric">
+                        <span class="deximind-p6-metric-label">Memory</span>
+                        <span class="deximind-p6-metric-value" id="deximind-p6-memory">0%</span>
+                    </div>
+                    <div class="deximind-p6-metric">
+                        <span class="deximind-p6-metric-label">Latency P80</span>
+                        <span class="deximind-p6-metric-value" id="deximind-p6-latency">0ms</span>
+                    </div>
+                    <div class="deximind-p6-metric">
+                        <span class="deximind-p6-metric-label">Accuracy</span>
+                        <span class="deximind-p6-metric-value" id="deximind-p6-accuracy">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Controls Section -->
+            <div class="deximind-p6-section emergency">
+                <h3>Emergency Controls</h3>
+                <button class="deximind-p6-button danger" id="deximind-p6-kill-switch">Emergency Stop</button>
+                <button class="deximind-p6-button primary" id="deximind-p6-reset-kill-switch" style="display: none;">Reset System</button>
+                <div id="deximind-p6-kill-switch-status" style="font-size: 0.8rem; opacity: 0.8; margin-top: 0.5rem;"></div>
+            </div>
+
+            <!-- Notifications Section -->
+            <div class="deximind-p6-section notifications">
+                <h3>Notifications</h3>
+                <div id="deximind-p6-notification-list">
+                    <div class="deximind-p6-empty-state">No notifications</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DexiMind P6 UI Integration Script
+        class DexiMindP6UI {
+            constructor() {
+                this.ws = null;
+                this.connected = false;
+                this.reconnectAttempts = 0;
+                this.maxReconnectAttempts = 10;
+                this.reconnectDelay = 5000;
+                this.tasks = [];
+                this.systemStatus = {};
+                this.performanceMetrics = {};
+                this.notifications = [];
+                this.killSwitchActive = false;
+                
+                this.init();
+            }
+            
+            init() {
+                console.log('DexiMind P6 UI: Initializing...');
+                this.setupEventListeners();
+                this.connectWebSocket();
+                this.startUIUpdates();
+                this.loadStoredData();
+            }
+            
+            setupEventListeners() {
+                // Toggle UI visibility
+                document.getElementById('deximind-p6-toggle').addEventListener('click', () => {
+                    this.toggleUI();
+                });
+                
+                // Command submission
+                document.getElementById('deximind-p6-submit-command').addEventListener('click', () => {
+                    this.submitCommand();
+                });
+                
+                document.getElementById('deximind-p6-command-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.submitCommand();
+                    }
+                });
+                
+                // Kill switch
+                document.getElementById('deximind-p6-kill-switch').addEventListener('click', () => {
+                    this.activateKillSwitch();
+                });
+                
+                document.getElementById('deximind-p6-reset-kill-switch').addEventListener('click', () => {
+                    this.resetKillSwitch();
+                });
+            }
+            
+            connectWebSocket() {
+                try {
+                    this.ws = new WebSocket('ws://localhost:8001/ws');
+                    
+                    this.ws.onopen = () => {
+                        this.connected = true;
+                        this.reconnectAttempts = 0;
+                        console.log('DexiMind P6 UI: Connected to API');
+                        this.updateConnectionStatus(true);
+                        this.sendPing();
+                    };
+                    
+                    this.ws.onmessage = (event) => {
+                        try {
+                            const data = JSON.parse(event.data);
+                            this.handleMessage(data);
+                        } catch (error) {
+                            console.error('DexiMind P6 UI: Error parsing message:', error);
+                        }
+                    };
+                    
+                    this.ws.onclose = () => {
+                        this.connected = false;
+                        console.log('DexiMind P6 UI: Disconnected from API');
+                        this.updateConnectionStatus(false);
+                        this.attemptReconnect();
+                    };
+                    
+                    this.ws.onerror = (error) => {
+                        console.error('DexiMind P6 UI: WebSocket error:', error);
+                    };
+                    
+                } catch (error) {
+                    console.error('DexiMind P6 UI: Failed to connect:', error);
+                    this.attemptReconnect();
+                }
+            }
+            
+            attemptReconnect() {
+                if (this.reconnectAttempts < this.maxReconnectAttempts) {
+                    this.reconnectAttempts++;
+                    console.log(`DexiMind P6 UI: Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
+                    setTimeout(() => this.connectWebSocket(), this.reconnectDelay);
+                } else {
+                    console.error('DexiMind P6 UI: Max reconnection attempts reached');
+                    this.updateConnectionStatus(false, 'Connection failed');
+                }
+            }
+            
+            handleMessage(data) {
+                switch (data.type) {
+                    case 'task_update':
+                        this.updateTask(data.data);
+                        break;
+                    case 'system_status':
+                        this.updateSystemStatus(data.data);
+                        break;
+                    case 'performance_metrics':
+                        this.updatePerformanceMetrics(data.data);
+                        break;
+                    case 'kill_switch_activated':
+                        this.handleKillSwitchActivated(data.data);
+                        break;
+                    case 'kill_switch_reset':
+                        this.handleKillSwitchReset(data.data);
+                        break;
+                    case 'notification':
+                        this.addNotification(data.data);
+                        break;
+                    case 'pong':
+                        // Heartbeat response
+                        break;
+                    default:
+                        console.log('DexiMind P6 UI: Unknown message type:', data.type);
+                }
+            }
+            
+            async submitCommand() {
+                const input = document.getElementById('deximind-p6-command-input');
+                const command = input.value.trim();
+                
+                if (!command) {
+                    this.addNotification({
+                        type: 'warning',
+                        title: 'Empty Command',
+                        message: 'Please enter a command before submitting'
+                    });
+                    return;
+                }
+                
+                if (!this.connected) {
+                    this.addNotification({
+                        type: 'error',
+                        title: 'Not Connected',
+                        message: 'Cannot submit command - not connected to DexiMind API'
+                    });
+                    return;
+                }
+                
+                try {
+                    const success = await this.createTask(command);
+                    if (success) {
+                        input.value = '';
+                        this.addNotification({
+                            type: 'info',
+                            title: 'Task Submitted',
+                            message: `Command "${command}" has been submitted successfully`
+                        });
+                    } else {
+                        this.addNotification({
+                            type: 'error',
+                            title: 'Submission Failed',
+                            message: 'Failed to submit command to DexiMind API'
+                        });
+                    }
+                } catch (error) {
+                    console.error('DexiMind P6 UI: Error submitting command:', error);
+                    this.addNotification({
+                        type: 'error',
+                        title: 'Submission Error',
+                        message: 'An error occurred while submitting the command'
+                    });
+                }
+            }
+            
+            async createTask(command) {
+                if (!this.connected) return false;
+                
+                try {
+                    const message = {
+                        type: 'create_task',
+                        data: {
+                            command: command,
+                            user_id: 'web_user',
+                            priority: 5,
+                            timestamp: new Date().toISOString()
+                        }
+                    };
+                    
+                    this.ws.send(JSON.stringify(message));
+                    return true;
+                } catch (error) {
+                    console.error('DexiMind P6 UI: Error creating task:', error);
+                    return false;
+                }
+            }
+            
+            updateTask(task) {
+                const existingIndex = this.tasks.findIndex(t => t.task_id === task.task_id);
+                if (existingIndex >= 0) {
+                    this.tasks[existingIndex] = { ...this.tasks[existingIndex], ...task };
+                } else {
+                    this.tasks.push(task);
+                }
+                
+                // Keep only last 20 tasks
+                if (this.tasks.length > 20) {
+                    this.tasks = this.tasks.slice(-20);
+                }
+                
+                this.renderTasks();
+                this.storeData();
+            }
+            
+            updateSystemStatus(status) {
+                this.systemStatus = status;
+                this.renderSystemStatus();
+                this.storeData();
+            }
+            
+            updatePerformanceMetrics(metrics) {
+                this.performanceMetrics = metrics;
+                this.renderPerformanceMetrics();
+                this.storeData();
+            }
+            
+            handleKillSwitchActivated(data) {
+                this.killSwitchActive = true;
+                this.updateKillSwitchUI(true, data.reason || 'Unknown reason');
+                this.addNotification({
+                    type: 'critical',
+                    title: 'Kill Switch Activated',
+                    message: `System disabled: ${data.reason || 'Unknown reason'}`
+                });
+            }
+            
+            handleKillSwitchReset(data) {
+                this.killSwitchActive = false;
+                this.updateKillSwitchUI(false);
+                this.addNotification({
+                    type: 'info',
+                    title: 'Kill Switch Reset',
+                    message: 'System reactivated and ready for tasks'
+                });
+            }
+            
+            addNotification(notification) {
+                const fullNotification = {
+                    id: `notif_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                    timestamp: new Date().toISOString(),
+                    ...notification
+                };
+                
+                this.notifications.unshift(fullNotification);
+                
+                // Keep only last 50 notifications
+                if (this.notifications.length > 50) {
+                    this.notifications = this.notifications.slice(0, 50);
+                }
+                
+                this.renderNotifications();
+                this.storeData();
+            }
+            
+            renderTasks() {
+                const container = document.getElementById('deximind-p6-task-list');
+                
+                if (this.tasks.length === 0) {
+                    container.innerHTML = '<div class="deximind-p6-empty-state">No active tasks</div>';
+                    return;
+                }
+                
+                container.innerHTML = this.tasks.map(task => `
+                    <div class="deximind-p6-task-item ${task.status}">
+                        <div class="deximind-p6-task-command">${this.escapeHtml(task.command || 'Unknown command')}</div>
+                        <div class="deximind-p6-task-status">
+                            Status: <strong>${task.status || 'unknown'}</strong>
+                            ${task.progress !== undefined ? ` | Progress: ${task.progress}%` : ''}
+                        </div>
+                        ${task.progress !== undefined ? `
+                            <div class="deximind-p6-task-progress">
+                                <div class="deximind-p6-task-progress-bar" style="width: ${task.progress}%"></div>
+                            </div>
+                        ` : ''}
+                        ${task.status === 'running' ? `
+                            <button class="deximind-p6-button primary" onclick="deximindP6UI.cancelTask('${task.task_id}')" style="margin-top: 0.5rem; padding: 0.5rem; font-size: 0.8rem;">
+                                Cancel Task
+                            </button>
+                        ` : ''}
+                    </div>
+                `).join('');
+            }
+            
+            renderSystemStatus() {
+                const status = this.systemStatus.status || 'unknown';
+                const statusClass = {
+                    'healthy': 'healthy',
+                    'warning': 'warning',
+                    'error': 'error',
+                    'critical': 'error'
+                }[status] || 'unknown';
+                
+                document.getElementById('deximind-p6-overall-status').textContent = status.toUpperCase();
+                document.getElementById('deximind-p6-active-tasks').textContent = this.systemStatus.performance?.active_tasks || 0;
+                document.getElementById('deximind-p6-components').textContent = Object.keys(this.systemStatus.components || {}).length;
+                
+                // Update status indicator
+                const indicator = document.querySelector('#deximind-p6-status-display .deximind-p6-status-indicator');
+                indicator.className = `deximind-p6-status-indicator ${statusClass}`;
+            }
+            
+            renderPerformanceMetrics() {
+                const metrics = this.performanceMetrics;
+                
+                document.getElementById('deximind-p6-cpu').textContent = `${metrics.cpu_percent || 0}%`;
+                document.getElementById('deximind-p6-memory').textContent = `${metrics.memory_percent || 0}%`;
+                document.getElementById('deximind-p6-latency').textContent = `${metrics.latency_p80 || 0}ms`;
+                document.getElementById('deximind-p6-accuracy').textContent = `${metrics.accuracy || 0}%`;
+            }
+            
+            renderNotifications() {
+                const container = document.getElementById('deximind-p6-notification-list');
+                
+                if (this.notifications.length === 0) {
+                    container.innerHTML = '<div class="deximind-p6-empty-state">No notifications</div>';
+                    return;
+                }
+                
+                container.innerHTML = this.notifications.slice(0, 10).map(notif => `
+                    <div class="deximind-p6-notification ${notif.type}">
+                        <div class="deximind-p6-notification-title">${this.escapeHtml(notif.title || 'Notification')}</div>
+                        <div class="deximind-p6-notification-message">${this.escapeHtml(notif.message || '')}</div>
+                        <div class="deximind-p6-notification-time">${this.formatTime(notif.timestamp)}</div>
+                    </div>
+                `).join('');
+            }
+            
+            updateKillSwitchUI(active, reason = '') {
+                const killSwitchBtn = document.getElementById('deximind-p6-kill-switch');
+                const resetBtn = document.getElementById('deximind-p6-reset-kill-switch');
+                const statusDiv = document.getElementById('deximind-p6-kill-switch-status');
+                
+                if (active) {
+                    killSwitchBtn.style.display = 'none';
+                    resetBtn.style.display = 'block';
+                    statusDiv.textContent = `Kill switch active: ${reason}`;
+                    statusDiv.style.color = '#dc3545';
+                } else {
+                    killSwitchBtn.style.display = 'block';
+                    resetBtn.style.display = 'none';
+                    statusDiv.textContent = 'System ready';
+                    statusDiv.style.color = '#28a745';
+                }
+            }
+            
+            async activateKillSwitch() {
+                const reason = prompt('Reason for emergency stop:');
+                if (!reason) return;
+                
+                if (!this.connected) {
+                    this.addNotification({
+                        type: 'error',
+                        title: 'Not Connected',
+                        message: 'Cannot activate kill switch - not connected to DexiMind API'
+                    });
+                    return;
+                }
+                
+                try {
+                    const message = {
+                        type: 'activate_kill_switch',
+                        data: { reason }
+                    };
+                    
+                    this.ws.send(JSON.stringify(message));
+                } catch (error) {
+                    console.error('DexiMind P6 UI: Error activating kill switch:', error);
+                    this.addNotification({
+                        type: 'error',
+                        title: 'Kill Switch Error',
+                        message: 'Failed to activate kill switch'
+                    });
+                }
+            }
+            
+            async resetKillSwitch() {
+                if (!this.connected) {
+                    this.addNotification({
+                        type: 'error',
+                        title: 'Not Connected',
+                        message: 'Cannot reset kill switch - not connected to DexiMind API'
+                    });
+                    return;
+                }
+                
+                try {
+                    const message = {
+                        type: 'reset_kill_switch',
+                        data: {}
+                    };
+                    
+                    this.ws.send(JSON.stringify(message));
+                } catch (error) {
+                    console.error('DexiMind P6 UI: Error resetting kill switch:', error);
+                    this.addNotification({
+                        type: 'error',
+                        title: 'Reset Error',
+                        message: 'Failed to reset kill switch'
+                    });
+                }
+            }
+            
+            async cancelTask(taskId) {
+                if (!this.connected) return;
+                
+                try {
+                    const message = {
+                        type: 'cancel_task',
+                        data: { task_id: taskId }
+                    };
+                    
+                    this.ws.send(JSON.stringify(message));
+                    this.addNotification({
+                        type: 'info',
+                        title: 'Task Cancelled',
+                        message: `Task ${taskId} has been cancelled`
+                    });
+                } catch (error) {
+                    console.error('DexiMind P6 UI: Error cancelling task:', error);
+                }
+            }
+            
+            updateConnectionStatus(connected, message = null) {
+                const indicator = document.getElementById('deximind-p6-connection-indicator');
+                const text = document.getElementById('deximind-p6-connection-text');
+                
+                if (connected) {
+                    indicator.classList.add('connected');
+                    text.textContent = 'Connected';
+                } else {
+                    indicator.classList.remove('connected');
+                    text.textContent = message || 'Disconnected';
+                }
+            }
+            
+            toggleUI() {
+                const ui = document.getElementById('deximind-p6-ui');
+                const toggle = document.getElementById('deximind-p6-toggle');
+                
+                ui.classList.toggle('collapsed');
+                toggle.textContent = ui.classList.contains('collapsed') ? '+' : '−';
+                
+                // Store UI state
+                localStorage.setItem('deximind_p6_ui_collapsed', ui.classList.contains('collapsed'));
+            }
+            
+            startUIUpdates() {
+                // Send ping every 30 seconds to keep connection alive
+                setInterval(() => {
+                    if (this.connected) {
+                        this.sendPing();
+                    }
+                }, 30000);
+                
+                // Restore UI state
+                const collapsed = localStorage.getItem('deximind_p6_ui_collapsed') === 'true';
+                if (collapsed) {
+                    const ui = document.getElementById('deximind-p6-ui');
+                    const toggle = document.getElementById('deximind-p6-toggle');
+                    ui.classList.add('collapsed');
+                    toggle.textContent = '+';
+                }
+            }
+            
+            sendPing() {
+                if (this.connected && this.ws.readyState === WebSocket.OPEN) {
+                    try {
+                        this.ws.send(JSON.stringify({ type: 'ping' }));
+                    } catch (error) {
+                        console.error('DexiMind P6 UI: Error sending ping:', error);
+                    }
+                }
+            }
+            
+            storeData() {
+                try {
+                    const data = {
+                        tasks: this.tasks,
+                        systemStatus: this.systemStatus,
+                        performanceMetrics: this.performanceMetrics,
+                        notifications: this.notifications.slice(0, 20), // Store only recent notifications
+                        timestamp: new Date().toISOString()
+                    };
+                    localStorage.setItem('deximind_p6_ui_data', JSON.stringify(data));
+                } catch (error) {
+                    console.error('DexiMind P6 UI: Error storing data:', error);
+                }
+            }
+            
+            loadStoredData() {
+                try {
+                    const stored = localStorage.getItem('deximind_p6_ui_data');
+                    if (stored) {
+                        const data = JSON.parse(stored);
+                        this.tasks = data.tasks || [];
+                        this.systemStatus = data.systemStatus || {};
+                        this.performanceMetrics = data.performanceMetrics || {};
+                        this.notifications = data.notifications || [];
+                        
+                        // Render with stored data
+                        this.renderTasks();
+                        this.renderSystemStatus();
+                        this.renderPerformanceMetrics();
+                        this.renderNotifications();
+                    }
+                } catch (error) {
+                    console.error('DexiMind P6 UI: Error loading stored data:', error);
+                }
+            }
+            
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            formatTime(timestamp) {
+                try {
+                    const date = new Date(timestamp);
+                    const now = new Date();
+                    const diff = now - date;
+                    
+                    if (diff < 60000) { // Less than 1 minute
+                        return 'Just now';
+                    } else if (diff < 3600000) { // Less than 1 hour
+                        return `${Math.floor(diff / 60000)}m ago`;
+                    } else if (diff < 86400000) { // Less than 1 day
+                        return `${Math.floor(diff / 3600000)}h ago`;
+                    } else {
+                        return date.toLocaleDateString();
+                    }
+                } catch (error) {
+                    return 'Unknown';
+                }
+            }
+        }
+        
+        // Initialize DexiMind P6 UI when page loads
+        let deximindP6UI;
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DexiMind P6 UI: Page loaded, initializing...');
+            deximindP6UI = new DexiMindP6UI();
+        });
+        
+        // Also initialize if DOM is already loaded
+        if (document.readyState === 'loading') {
+            // Document is still loading, wait for DOMContentLoaded
+        } else {
+            // Document has already loaded
+            console.log('DexiMind P6 UI: DOM already loaded, initializing immediately...');
+            deximindP6UI = new DexiMindP6UI();
+        }
+    </script>
+</body>
+</html>

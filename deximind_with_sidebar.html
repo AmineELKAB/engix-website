@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DexiMind - Zero-installation AI agent that continuously learns your skills and controls any computer. Automate complex workflows across all applications without software installation.">
+    <meta name="keywords" content="DexiMind, AI agent, zero installation, computer control, workflow automation, AI assistant, machine learning, automation, productivity, AI copilot">
+    <meta name="author" content="Engix - DexiMind AI Agent">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://engix.dev/deximind.html">
+    <meta property="og:title" content="DexiMind - Your AI Agent to Control and Learn Anything">
+    <meta property="og:description" content="Zero-installation AI agent that continuously learns your skills and controls any computer. Automate complex workflows across all applications.">
+    <meta property="og:image" content="https://engix.dev/images/Image0_1.jpg">
+    <meta property="og:site_name" content="Engix.dev">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://engix.dev/deximind.html">
+    <meta property="twitter:title" content="DexiMind - Your AI Agent to Control and Learn Anything">
+    <meta property="twitter:description" content="Zero-installation AI agent that continuously learns your skills and controls any computer. Automate complex workflows across all applications.">
+    <meta property="twitter:image" content="https://engix.dev/images/Image0_1.jpg">
+    <meta property="twitter:site" content="@engix">
+    
+    <title>DexiMind - Your AI Agent to Control and Learn Anything | Engix.dev</title>
+    
+    <!-- Favicon declarations -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <meta name="msapplication-TileImage" content="favicon.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    
+    <link rel="stylesheet" href="styles.css?v=3">
+    <link rel="stylesheet" href="deximind.css?v=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" as="image" href="images/Image0_1.jpg?v=1">
+    <link rel="preload" as="style" href="deximind.css?v=1">
+    <link rel="preload" as="script" href="deximind.js?v=1">
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "DexiMind",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Windows, macOS, Linux",
+        "description": "Zero-installation AI agent that continuously learns your skills and controls any computer. Automate complex workflows across all applications without software installation.",
+        "url": "https://engix.dev/deximind.html",
+        "author": {
+            "@type": "Organization",
+            "name": "Engix",
+            "url": "https://engix.dev"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+        },
+        "featureList": [
+            "Zero software installation required",
+            "Continuous learning of user skills",
+            "Computer control without installation",
+            "Workflow automation across applications",
+            "AI-powered task execution",
+            "Privacy-focused design",
+            "Cross-platform compatibility"
+        ]
+    }
+    </script>
+</head>
+<body class="deximind-body">
+    <!-- Background Image -->
+    <div class="background-image"></div>
+    
+    <!-- Main Content - Minimal -->
+    <main class="deximind-main-content">
+        <!-- Empty content area - only background image and P6 UI sidebar visible -->
+    </main>
+
+    <!-- DexiMind P6 UI Sidebar -->
+    <div id="deximind-p6-ui">
+        <div id="deximind-ui-panel" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 400px;
+            height: 100vh;
+            background: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+            z-index: 10000;
+            overflow-y: auto;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        ">
+            <!-- Header -->
+            <div style="
+                background: #343a40;
+                color: white;
+                padding: 15px;
+                text-align: center;
+                border-bottom: 1px solid #495057;
+            ">
+                <h2 style="margin: 0; font-size: 18px;">DexiMind AI Agent</h2>
+                <div id="connection-status" style="font-size: 12px; margin-top: 5px; color: #28a745;">✅ Connected (Demo Mode)</div>
+            </div>
+            
+            <!-- Task Queue -->
+            <div class="ui-section" style="padding: 15px; border-bottom: 1px solid #dee2e6;">
+                <h3 style="margin: 0 0 10px 0; color: #495057; font-size: 16px;">Task Queue</h3>
+                <div id="task-input" style="margin-bottom: 10px;">
+                    <input type="text" id="command-input" placeholder="Enter your command..." 
+                           style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">
+                    <button id="submit-command" style="
+                        width: 100%; 
+                        padding: 8px; 
+                        margin-top: 5px;
+                        background: #343a40; 
+                        color: white; 
+                        border: none; 
+                        border-radius: 4px;
+                        cursor: pointer;
+                        font-size: 14px;
+                    ">Submit Task</button>
+                </div>
+                <div id="task-list" style="max-height: 200px; overflow-y: auto;">
+                    <div class="task-item" style="
+                        border: 1px solid #ddd; 
+                        margin: 5px 0; 
+                        padding: 8px; 
+                        border-radius: 4px;
+                        background: white;
+                        font-size: 12px;
+                    ">
+                        <div style="font-weight: bold; margin-bottom: 4px;">Click on the submit button</div>
+                        <div>Status: <span class="status-completed" style="font-weight: bold; color: #28a745;">completed</span></div>
+                        <div>Progress: 100%</div>
+                    </div>
+                    
+                    <div class="task-item" style="
+                        border: 1px solid #ddd; 
+                        margin: 5px 0; 
+                        padding: 8px; 
+                        border-radius: 4px;
+                        background: white;
+                        font-size: 12px;
+                    ">
+                        <div style="font-weight: bold; margin-bottom: 4px;">Fill out the contact form</div>
+                        <div>Status: <span class="status-running" style="font-weight: bold; color: #343a40;">running</span></div>
+                        <div>Progress: 75%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System Status -->
+            <div class="ui-section" style="padding: 15px; border-bottom: 1px solid #dee2e6;">
+                <h3 style="margin: 0 0 10px 0; color: #495057; font-size: 16px;">System Status</h3>
+                <div id="status-indicators">
+                    <div style="padding: 8px; background: #28a745; color: white; border-radius: 4px; margin: 5px 0; text-align: center; font-weight: bold;">
+                        Status: HEALTHY
+                    </div>
+                    <div style="font-size: 12px; margin: 2px 0;">Components: 5</div>
+                    <div style="font-size: 12px; margin: 2px 0;">Active Tasks: 1</div>
+                </div>
+            </div>
+            
+            <!-- Performance Metrics -->
+            <div class="ui-section" style="padding: 15px; border-bottom: 1px solid #dee2e6;">
+                <h3 style="margin: 0 0 10px 0; color: #495057; font-size: 16px;">Performance</h3>
+                <div id="metrics-display">
+                    <div style="font-size: 12px; margin: 2px 0;">CPU: 45%</div>
+                    <div style="font-size: 12px; margin: 2px 0;">Memory: 62%</div>
+                    <div style="font-size: 12px; margin: 2px 0;">Latency P80: 118ms</div>
+                    <div style="font-size: 12px; margin: 2px 0;">Accuracy: 96%</div>
+                </div>
+            </div>
+            
+            <!-- Emergency Controls -->
+            <div class="ui-section" style="padding: 15px; border-bottom: 1px solid #dee2e6;">
+                <h3 style="margin: 0 0 10px 0; color: #495057; font-size: 16px;">Emergency Controls</h3>
+                <button id="kill-switch-btn" style="
+                    width: 100%; 
+                    padding: 10px; 
+                    background: #dc3545; 
+                    color: white; 
+                    border: none; 
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: bold;
+                ">Emergency Stop</button>
+            </div>
+            
+            <!-- Notifications -->
+            <div class="ui-section" style="padding: 15px;">
+                <h3 style="margin: 0 0 10px 0; color: #495057; font-size: 16px;">Notifications</h3>
+                <div id="notification-list" style="max-height: 150px; overflow-y: auto;">
+                    <div class="notification" style="
+                        padding: 6px; 
+                        margin: 3px 0; 
+                        background: #f8f9fa; 
+                        border-left: 3px solid #28a745; 
+                        border-radius: 2px;
+                        font-size: 11px;
+                    ">
+                        <div style="font-weight: bold;">Connected</div>
+                        <div>Successfully connected to DexiMind AI Agent (Demo Mode)</div>
+                        <div style="color: #6c757d; font-size: 10px;">5:47 PM</div>
+                    </div>
+                    
+                    <div class="notification" style="
+                        padding: 6px; 
+                        margin: 3px 0; 
+                        background: #f8f9fa; 
+                        border-left: 3px solid #343a40; 
+                        border-radius: 2px;
+                        font-size: 11px;
+                    ">
+                        <div style="font-weight: bold;">Task Completed</div>
+                        <div>Task "Click on the submit button" completed successfully</div>
+                        <div style="color: #6c757d; font-size: 10px;">5:46 PM</div>
+                    </div>
+                    
+                    <div class="notification" style="
+                        padding: 6px; 
+                        margin: 3px 0; 
+                        background: #f8f9fa; 
+                        border-left: 3px solid #ffc107; 
+                        border-radius: 2px;
+                        font-size: 11px;
+                    ">
+                        <div style="font-weight: bold;">System Optimized</div>
+                        <div>Performance optimization completed. Latency improved by 15%</div>
+                        <div style="color: #6c757d; font-size: 10px;">5:45 PM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo Mode JavaScript -->
+    <script>
+        // Demo Mode - Simulate DexiMind P6 UI functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DexiMind P6 UI loaded in Demo Mode');
+            
+            // Add demo functionality
+            const commandInput = document.getElementById('command-input');
+            const submitButton = document.getElementById('submit-command');
+            const taskList = document.getElementById('task-list');
+            const notificationList = document.getElementById('notification-list');
+            const killSwitchBtn = document.getElementById('kill-switch-btn');
+            
+            let taskCounter = 0;
+            
+            // Submit task functionality
+            submitButton.addEventListener('click', createDemoTask);
+            commandInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    createDemoTask();
+                }
+            });
+            
+            // Kill switch functionality
+            killSwitchBtn.addEventListener('click', function() {
+                const reason = prompt('Reason for emergency stop:');
+                if (reason) {
+                    addNotification('Kill Switch Activated', `System disabled: ${reason}`, 'critical');
+                }
+            });
+            
+            function createDemoTask() {
+                const command = commandInput.value.trim();
+                if (!command) return;
+                
+                taskCounter++;
+                const taskId = `demo_task_${taskCounter}`;
+                
+                // Add task to list
+                const taskElement = document.createElement('div');
+                taskElement.className = 'task-item';
+                taskElement.style.cssText = `
+                    border: 1px solid #ddd; 
+                    margin: 5px 0; 
+                    padding: 8px; 
+                    border-radius: 4px;
+                    background: white;
+                    font-size: 12px;
+                `;
+                
+                taskElement.innerHTML = `
+                    <div style="font-weight: bold; margin-bottom: 4px;">${command}</div>
+                    <div>Status: <span class="status-pending" style="font-weight: bold; color: #ffc107;">pending</span></div>
+                    <div>Progress: 0%</div>
+                `;
+                
+                taskList.insertBefore(taskElement, taskList.firstChild);
+                
+                // Add notification
+                addNotification('Task Created', `Created task: ${command}`, 'info');
+                
+                // Clear input
+                commandInput.value = '';
+                
+                // Simulate task processing
+                setTimeout(() => {
+                    const statusSpan = taskElement.querySelector('.status-pending');
+                    statusSpan.textContent = 'running';
+                    statusSpan.style.color = '#343a40';
+                    statusSpan.className = 'status-running';
+                    
+                    const progressDiv = taskElement.querySelector('div:last-child');
+                    progressDiv.textContent = 'Progress: 50%';
+                    
+                    addNotification('Task Started', `Task "${command}" is now running`, 'info');
+                }, 1000);
+                
+                setTimeout(() => {
+                    const statusSpan = taskElement.querySelector('.status-running');
+                    statusSpan.textContent = 'completed';
+                    statusSpan.style.color = '#28a745';
+                    statusSpan.className = 'status-completed';
+                    
+                    const progressDiv = taskElement.querySelector('div:last-child');
+                    progressDiv.textContent = 'Progress: 100%';
+                    
+                    addNotification('Task Completed', `Task "${command}" completed successfully`, 'success');
+                }, 3000);
+            }
+            
+            function addNotification(title, message, type) {
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.style.cssText = `
+                    padding: 6px; 
+                    margin: 3px 0; 
+                    background: #f8f9fa; 
+                    border-left: 3px solid #343a40; 
+                    border-radius: 2px;
+                    font-size: 11px;
+                `;
+                
+                // Set border color based on type
+                if (type === 'success') notification.style.borderLeftColor = '#28a745';
+                if (type === 'error' || type === 'critical') notification.style.borderLeftColor = '#dc3545';
+                if (type === 'warning') notification.style.borderLeftColor = '#ffc107';
+                
+                const timestamp = new Date().toLocaleTimeString();
+                notification.innerHTML = `
+                    <div style="font-weight: bold;">${title}</div>
+                    <div>${message}</div>
+                    <div style="color: #6c757d; font-size: 10px;">${timestamp}</div>
+                `;
+                
+                notificationList.insertBefore(notification, notificationList.firstChild);
+                
+                // Keep only last 10 notifications
+                while (notificationList.children.length > 10) {
+                    notificationList.removeChild(notificationList.lastChild);
+                }
+            }
+            
+            // Simulate real-time updates
+            setInterval(() => {
+                const metricsDisplay = document.getElementById('metrics-display');
+                const cpuElement = metricsDisplay.children[0];
+                const memoryElement = metricsDisplay.children[1];
+                
+                // Update CPU usage (simulate fluctuation)
+                const currentCpu = parseInt(cpuElement.textContent);
+                const newCpu = Math.max(30, Math.min(70, currentCpu + (Math.random() - 0.5) * 10));
+                cpuElement.textContent = `CPU: ${Math.round(newCpu)}%`;
+                
+                // Update memory usage (simulate fluctuation)
+                const currentMemory = parseInt(memoryElement.textContent);
+                const newMemory = Math.max(50, Math.min(80, currentMemory + (Math.random() - 0.5) * 5));
+                memoryElement.textContent = `Memory: ${Math.round(newMemory)}%`;
+            }, 5000);
+        });
+    </script>
+
+    <!-- Original Scripts -->
+    <script>
+        console.log('========================');
+        console.log('DexiMind Page Loaded');
+        console.log('Current URL:', window.location.href);
+        console.log('Stored users on page load:', JSON.parse(localStorage.getItem('deximind_users') || '[]'));
+        console.log('========================');
+    </script>
+    <script src="config.js?v=2"></script>
+    <script src="llm-integration.js?v=1"></script>
+    <script src="deximind.js?v=2"></script>
+    
+    <style>
+        .status-pending { color: #ffc107; }
+        .status-running { color: #343a40; }
+        .status-completed { color: #28a745; }
+        .status-failed { color: #dc3545; }
+        .status-cancelled { color: #6c757d; }
+        
+        /* Main content is now minimal - just background */
+        .deximind-main-content {
+            height: 100vh;
+            width: 100vw;
+            margin-left: 400px;
+        }
+        
+        @media (max-width: 1200px) {
+            .deximind-main-content {
+                margin-left: 0;
+            }
+            
+            #deximind-p6-ui {
+                display: none;
+            }
+        }
+    </style>
+</body>
+</html>

@@ -39,8 +39,8 @@ function openModal() {
 }
 
 function openDexiMindPage() {
-    // Navigate to DexiMind page
-    window.location.href = 'deximind.html';
+    // Navigate to DexiMind P6 UI page
+    window.location.href = 'deximind-p6-ui.html';
 }
 
 function closeModalFunc() {
