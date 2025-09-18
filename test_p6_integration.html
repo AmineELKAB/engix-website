@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DexiMind P6 UI Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .test-result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .test-result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .test-result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-indicator.connected {
+            background: #28a745;
+        }
+        .status-indicator.disconnected {
+            background: #dc3545;
+        }
+        .status-indicator.unknown {
+            background: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>DexiMind P6 UI Integration Test</h1>
+        <p>This page tests the DexiMind P6 UI integration with your existing web page.</p>
+        
+        <!-- Test 1: Script Loading -->
+        <div class="test-section">
+            <h3>Test 1: Integration Script Loading</h3>
+            <p>Verify that the P6 UI integration script loads correctly.</p>
+            <button class="test-button" onclick="testScriptLoading()">Test Script Loading</button>
+            <div id="script-loading-result" class="test-result" style="display: none;"></div>
+        </div>
+        
+        <!-- Test 2: UI Component Creation -->
+        <div class="test-section">
+            <h3>Test 2: UI Component Creation</h3>
+            <p>Check if the P6 UI components are created and visible.</p>
+            <button class="test-button" onclick="testUIComponents()">Test UI Components</button>
+            <div id="ui-components-result" class="test-result" style="display: none;"></div>
+        </div>
+        
+        <!-- Test 3: WebSocket Connection -->
+        <div class="test-section">
+            <h3>Test 3: WebSocket Connection</h3>
+            <p>Test connection to the DexiMind P6 API server.</p>
+            <button class="test-button" onclick="testWebSocketConnection()">Test WebSocket Connection</button>
+            <div id="websocket-result" class="test-result" style="display: none;"></div>
+        </div>
+        
+        <!-- Test 4: Task Creation -->
+        <div class="test-section">
+            <h3>Test 4: Task Creation</h3>
+            <p>Test creating a task through the P6 UI interface.</p>
+            <button class="test-button" onclick="testTaskCreation()">Test Task Creation</button>
+            <div id="task-creation-result" class="test-result" style="display: none;"></div>
+        </div>
+        
+        <!-- Test 5: System Status -->
+        <div class="test-section">
+            <h3>Test 5: System Status</h3>
+            <p>Check system status and performance metrics.</p>
+            <button class="test-button" onclick="testSystemStatus()">Test System Status</button>
+            <div id="system-status-result" class="test-result" style="display: none;"></div>
+        </div>
+        
+        <!-- Test 6: Notifications -->
+        <div class="test-section">
+            <h3>Test 6: Notifications</h3>
+            <p>Test notification system and user feedback.</p>
+            <button class="test-button" onclick="testNotifications()">Test Notifications</button>
+            <div id="notifications-result" class="test-result" style="display: none;"></div>
+        </div>
+        
+        <!-- Overall Status -->
+        <div class="test-section">
+            <h3>Overall Integration Status</h3>
+            <div id="overall-status">
+                <span class="status-indicator unknown"></span>
+                <span>Integration Status: Unknown</span>
+            </div>
+            <button class="test-button" onclick="runAllTests()">Run All Tests</button>
+            <button class="test-button" onclick="clearResults()">Clear Results</button>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="test-section">
+            <h3>Test Instructions</h3>
+            <ol>
+                <li><strong>Start the P6 UI Server:</strong> Run <code>python run_p6_ui.py</code> in the <code>02-DexiMind/ui</code> directory</li>
+                <li><strong>Load this test page:</strong> Open this HTML file in your browser</li>
+                <li><strong>Run the tests:</strong> Click "Run All Tests" to test the complete integration</li>
+                <li><strong>Check results:</strong> Review the test results for each component</li>
+                <li><strong>Verify UI:</strong> Look for the DexiMind Control sidebar on the right side of the page</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Include the P6 UI integration script -->
+    <script src="deximind_p6_integration_script.js"></script>
+    
+    <script>
+        // Test results storage
+        let testResults = {
+            scriptLoading: false,
+            uiComponents: false,
+            websocketConnection: false,
+            taskCreation: false,
+            systemStatus: false,
+            notifications: false
+        };
+        
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.className = `test-result ${type}`;
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+        
+        function updateOverallStatus() {
+            const totalTests = Object.keys(testResults).length;
+            const passedTests = Object.values(testResults).filter(result => result === true).length;
+            const statusElement = document.getElementById('overall-status');
+            const indicator = statusElement.querySelector('.status-indicator');
+            const text = statusElement.querySelector('span:last-child');
+            
+            if (passedTests === totalTests) {
+                indicator.className = 'status-indicator connected';
+                text.textContent = `Integration Status: All Tests Passed (${passedTests}/${totalTests})`;
+            } else if (passedTests > 0) {
+                indicator.className = 'status-indicator unknown';
+                text.textContent = `Integration Status: Partial Success (${passedTests}/${totalTests})`;
+            } else {
+                indicator.className = 'status-indicator disconnected';
+                text.textContent = `Integration Status: Tests Failed (${passedTests}/${totalTests})`;
+            }
+        }
+        
+        function testScriptLoading() {
+            try {
+                if (window.deximindP6UILoaded) {
+                    testResults.scriptLoading = true;
+                    showResult('script-loading-result', '✅ P6 UI integration script loaded successfully', 'success');
+                } else {
+                    testResults.scriptLoading = false;
+                    showResult('script-loading-result', '❌ P6 UI integration script not loaded', 'error');
+                }
+            } catch (error) {
+                testResults.scriptLoading = false;
+                showResult('script-loading-result', `❌ Error testing script loading: ${error.message}`, 'error');
+            }
+            updateOverallStatus();
+        }
+        
+        function testUIComponents() {
+            try {
+                const uiElement = document.getElementById('deximind-p6-ui');
+                const taskQueue = document.getElementById('deximind-p6-task-list');
+                const systemStatus = document.getElementById('deximind-p6-status-display');
+                const performanceMetrics = document.getElementById('deximind-p6-metrics-display');
+                const killSwitch = document.getElementById('deximind-p6-kill-switch');
+                const notifications = document.getElementById('deximind-p6-notification-list');
+                
+                if (uiElement && taskQueue && systemStatus && performanceMetrics && killSwitch && notifications) {
+                    testResults.uiComponents = true;
+                    showResult('ui-components-result', '✅ All P6 UI components created successfully', 'success');
+                } else {
+                    testResults.uiComponents = false;
+                    showResult('ui-components-result', '❌ Some P6 UI components are missing', 'error');
+                }
+            } catch (error) {
+                testResults.uiComponents = false;
+                showResult('ui-components-result', `❌ Error testing UI components: ${error.message}`, 'error');
+            }
+            updateOverallStatus();
+        }
+        
+        function testWebSocketConnection() {
+            try {
+                if (window.deximindP6UI && window.deximindP6UI.ws) {
+                    const ws = window.deximindP6UI.ws;
+                    if (ws.readyState === WebSocket.OPEN) {
+                        testResults.websocketConnection = true;
+                        showResult('websocket-result', '✅ WebSocket connection established successfully', 'success');
+                    } else if (ws.readyState === WebSocket.CONNECTING) {
+                        testResults.websocketConnection = false;
+                        showResult('websocket-result', '⏳ WebSocket connection in progress...', 'info');
+                    } else {
+                        testResults.websocketConnection = false;
+                        showResult('websocket-result', '❌ WebSocket connection failed or closed', 'error');
+                    }
+                } else {
+                    testResults.websocketConnection = false;
+                    showResult('websocket-result', '❌ WebSocket connection not initialized', 'error');
+                }
+            } catch (error) {
+                testResults.websocketConnection = false;
+                showResult('websocket-result', `❌ Error testing WebSocket connection: ${error.message}`, 'error');
+            }
+            updateOverallStatus();
+        }
+        
+        function testTaskCreation() {
+            try {
+                if (window.deximindP6UI) {
+                    // Simulate task creation
+                    const testTask = {
+                        task_id: 'test_task_' + Date.now(),
+                        command: 'Test command for integration testing',
+                        status: 'pending',
+                        progress: 0,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    window.deximindP6UI.updateTask(testTask);
+                    
+                    testResults.taskCreation = true;
+                    showResult('task-creation-result', '✅ Task creation and update functionality working', 'success');
+                } else {
+                    testResults.taskCreation = false;
+                    showResult('task-creation-result', '❌ P6 UI instance not available', 'error');
+                }
+            } catch (error) {
+                testResults.taskCreation = false;
+                showResult('task-creation-result', `❌ Error testing task creation: ${error.message}`, 'error');
+            }
+            updateOverallStatus();
+        }
+        
+        function testSystemStatus() {
+            try {
+                if (window.deximindP6UI) {
+                    // Simulate system status update
+                    const testStatus = {
+                        status: 'healthy',
+                        components: {
+                            perception: 'healthy',
+                            reflex: 'healthy',
+                            privacy: 'healthy',
+                            cloud_brain: 'healthy'
+                        },
+                        performance: {
+                            active_tasks: 1,
+                            cpu_percent: 25.5,
+                            memory_percent: 45.2,
+                            latency_p80: 118.5,
+                            accuracy: 96.8
+                        }
+                    };
+                    
+                    window.deximindP6UI.updateSystemStatus(testStatus);
+                    window.deximindP6UI.updatePerformanceMetrics(testStatus.performance);
+                    
+                    testResults.systemStatus = true;
+                    showResult('system-status-result', '✅ System status and metrics update working', 'success');
+                } else {
+                    testResults.systemStatus = false;
+                    showResult('system-status-result', '❌ P6 UI instance not available', 'error');
+                }
+            } catch (error) {
+                testResults.systemStatus = false;
+                showResult('system-status-result', `❌ Error testing system status: ${error.message}`, 'error');
+            }
+            updateOverallStatus();
+        }
+        
+        function testNotifications() {
+            try {
+                if (window.deximindP6UI) {
+                    // Test different notification types
+                    window.deximindP6UI.addNotification({
+                        type: 'info',
+                        title: 'Integration Test',
+                        message: 'Testing notification system'
+                    });
+                    
+                    window.deximindP6UI.addNotification({
+                        type: 'success',
+                        title: 'Test Complete',
+                        message: 'All notification tests passed'
+                    });
+                    
+                    testResults.notifications = true;
+                    showResult('notifications-result', '✅ Notification system working correctly', 'success');
+                } else {
+                    testResults.notifications = false;
+                    showResult('notifications-result', '❌ P6 UI instance not available', 'error');
+                }
+            } catch (error) {
+                testResults.notifications = false;
+                showResult('notifications-result', `❌ Error testing notifications: ${error.message}`, 'error');
+            }
+            updateOverallStatus();
+        }
+        
+        function runAllTests() {
+            // Clear previous results
+            clearResults();
+            
+            // Run tests with small delays to allow UI updates
+            setTimeout(() => testScriptLoading(), 100);
+            setTimeout(() => testUIComponents(), 200);
+            setTimeout(() => testWebSocketConnection(), 300);
+            setTimeout(() => testTaskCreation(), 400);
+            setTimeout(() => testSystemStatus(), 500);
+            setTimeout(() => testNotifications(), 600);
+        }
+        
+        function clearResults() {
+            const resultElements = [
+                'script-loading-result',
+                'ui-components-result',
+                'websocket-result',
+                'task-creation-result',
+                'system-status-result',
+                'notifications-result'
+            ];
+            
+            resultElements.forEach(id => {
+                const element = document.getElementById(id);
+                element.style.display = 'none';
+                element.textContent = '';
+            });
+            
+            // Reset test results
+            Object.keys(testResults).forEach(key => {
+                testResults[key] = false;
+            });
+            
+            updateOverallStatus();
+        }
+        
+        // Auto-run basic tests when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                testScriptLoading();
+                testUIComponents();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

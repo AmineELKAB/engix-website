@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DexiMind P6 UI Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover { background: #0056b3; }
+        
+        button.danger {
+            background: #dc3545;
+        }
+        
+        button.danger:hover {
+            background: #c82333;
+        }
+        
+        input[type="text"] {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px;
+        }
+        
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DexiMind P6 UI Test Page</h1>
+        
+        <div id="connection-status" class="status warning">
+            🔄 Connecting to DexiMind API Server...
+        </div>
+        
+        <div class="test-section">
+            <h3>Connection Test</h3>
+            <p>Testing connection to DexiMind P6 API Server at <code>http://localhost:8001</code></p>
+            <button onclick="testConnection()">Test Connection</button>
+            <button onclick="testWebSocket()">Test WebSocket</button>
+            <div id="connection-log" class="log"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Task Management Test</h3>
+            <p>Test creating and managing tasks through the API</p>
+            <input type="text" id="task-input" placeholder="Enter a test command..." value="Click on the submit button">
+            <button onclick="createTestTask()">Create Task</button>
+            <button onclick="listTasks()">List Tasks</button>
+            <div id="task-log" class="log"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>System Status Test</h3>
+            <p>Check system health and performance metrics</p>
+            <button onclick="checkSystemStatus()">Check System Status</button>
+            <button onclick="getMetrics()">Get Performance Metrics</button>
+            <div id="status-log" class="log"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Emergency Controls Test</h3>
+            <p>Test emergency controls and kill switch functionality</p>
+            <button class="danger" onclick="testKillSwitch()">Test Kill Switch</button>
+            <button onclick="resetKillSwitch()">Reset Kill Switch</button>
+            <div id="emergency-log" class="log"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Instructions</h3>
+            <div class="info">
+                <h4>How to Test:</h4>
+                <ol>
+                    <li><strong>Test Connection:</strong> Click "Test Connection" to verify the API server is running</li>
+                    <li><strong>Test WebSocket:</strong> Click "Test WebSocket" to verify real-time communication</li>
+                    <li><strong>Create Task:</strong> Enter a command and click "Create Task" to test task management</li>
+                    <li><strong>Check Status:</strong> Click "Check System Status" to verify system health</li>
+                    <li><strong>Test Metrics:</strong> Click "Get Performance Metrics" to see real-time data</li>
+                    <li><strong>Emergency Test:</strong> Test the kill switch functionality (use carefully!)</li>
+                </ol>
+                
+                <h4>Expected Results:</h4>
+                <ul>
+                    <li>✅ Connection status should show "Connected" in green</li>
+                    <li>✅ Tasks should be created and appear in the task list</li>
+                    <li>✅ System status should show "healthy"</li>
+                    <li>✅ Performance metrics should display real-time data</li>
+                    <li>✅ WebSocket connection should work for real-time updates</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- DexiMind P6 UI Integration Script -->
+    <script>
+    (function() {
+        // DexiMind P6 UI Integration
+        const DEXIMIND_UI_CONFIG = {
+            apiUrl: 'http://localhost:8001',
+            wsUrl: 'ws://localhost:8001/ws',
+            version: '1.0.0',
+            features: {
+                taskManagement: true,
+                systemMonitoring: true,
+                realTimeUpdates: true,
+                killSwitch: true,
+                userFeedback: true
+            }
+        };
+        
+        let ws = null;
+        let connected = false;
+        
+        // Initialize connection
+        function initConnection() {
+            testConnection();
+            connectWebSocket();
+        }
+        
+        // Test API connection
+        async function testConnection() {
+            try {
+                log('connection', 'Testing API connection...');
+                const response = await fetch(`${DEXIMIND_UI_CONFIG.apiUrl}/health`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log('connection', `✅ API Connected: ${data.status}`, 'success');
+                    updateConnectionStatus('Connected', 'success');
+                } else {
+                    log('connection', `❌ API Error: ${response.status}`, 'error');
+                    updateConnectionStatus('Connection Failed', 'error');
+                }
+            } catch (error) {
+                log('connection', `❌ Connection Failed: ${error.message}`, 'error');
+                updateConnectionStatus('Connection Failed', 'error');
+            }
+        }
+        
+        // Connect WebSocket
+        function connectWebSocket() {
+            try {
+                log('connection', 'Connecting to WebSocket...');
+                ws = new WebSocket(DEXIMIND_UI_CONFIG.wsUrl);
+                
+                ws.onopen = () => {
+                    connected = true;
+                    log('connection', '✅ WebSocket Connected', 'success');
+                    updateConnectionStatus('Connected (WebSocket)', 'success');
+                };
+                
+                ws.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    log('connection', `📨 WebSocket Message: ${data.type}`, 'info');
+                };
+                
+                ws.onclose = () => {
+                    connected = false;
+                    log('connection', '❌ WebSocket Disconnected', 'error');
+                    updateConnectionStatus('Disconnected', 'warning');
+                };
+                
+                ws.onerror = (error) => {
+                    log('connection', `❌ WebSocket Error: ${error}`, 'error');
+                    updateConnectionStatus('WebSocket Error', 'error');
+                };
+            } catch (error) {
+                log('connection', `❌ WebSocket Failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Test WebSocket
+        function testWebSocket() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'ping' }));
+                log('connection', '📤 Sent ping message', 'info');
+            } else {
+                log('connection', '❌ WebSocket not connected', 'error');
+            }
+        }
+        
+        // Create test task
+        async function createTestTask() {
+            const command = document.getElementById('task-input').value;
+            if (!command.trim()) {
+                log('task', '❌ Please enter a command', 'error');
+                return;
+            }
+            
+            try {
+                log('task', `Creating task: "${command}"`);
+                
+                const response = await fetch(`${DEXIMIND_UI_CONFIG.apiUrl}/tasks`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        command: command,
+                        user_id: 'test_user',
+                        priority: 5
+                    })
+                });
+                
+                if (response.ok) {
+                    const task = await response.json();
+                    log('task', `✅ Task created: ${task.task_id}`, 'success');
+                } else {
+                    log('task', `❌ Task creation failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log('task', `❌ Task creation error: ${error.message}`, 'error');
+            }
+        }
+        
+        // List tasks
+        async function listTasks() {
+            try {
+                log('task', 'Fetching task list...');
+                
+                const response = await fetch(`${DEXIMIND_UI_CONFIG.apiUrl}/tasks`);
+                
+                if (response.ok) {
+                    const tasks = await response.json();
+                    log('task', `✅ Found ${tasks.length} tasks`, 'success');
+                    tasks.forEach(task => {
+                        log('task', `  - ${task.command} (${task.status})`);
+                    });
+                } else {
+                    log('task', `❌ Failed to fetch tasks: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log('task', `❌ Task list error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Check system status
+        async function checkSystemStatus() {
+            try {
+                log('status', 'Checking system status...');
+                
+                const response = await fetch(`${DEXIMIND_UI_CONFIG.apiUrl}/status`);
+                
+                if (response.ok) {
+                    const status = await response.json();
+                    log('status', `✅ System Status: ${status.status}`, 'success');
+                    log('status', `  Components: ${Object.keys(status.components || {}).length}`);
+                    log('status', `  Active Tasks: ${status.performance?.active_tasks || 0}`);
+                } else {
+                    log('status', `❌ Status check failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log('status', `❌ Status check error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Get performance metrics
+        async function getMetrics() {
+            try {
+                log('status', 'Fetching performance metrics...');
+                
+                const response = await fetch(`${DEXIMIND_UI_CONFIG.apiUrl}/metrics`);
+                
+                if (response.ok) {
+                    const metrics = await response.json();
+                    log('status', `✅ Performance Metrics:`, 'success');
+                    log('status', `  CPU: ${metrics.cpu_percent || 0}%`);
+                    log('status', `  Memory: ${metrics.memory_percent || 0}%`);
+                    log('status', `  Latency P80: ${metrics.latency_p80 || 0}ms`);
+                    log('status', `  Accuracy: ${metrics.accuracy || 0}%`);
+                } else {
+                    log('status', `❌ Metrics fetch failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log('status', `❌ Metrics error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Test kill switch
+        async function testKillSwitch() {
+            const reason = prompt('Enter reason for emergency stop:');
+            if (!reason) return;
+            
+            try {
+                log('emergency', `Activating kill switch: ${reason}`);
+                
+                const response = await fetch(`${DEXIMIND_UI_CONFIG.apiUrl}/kill-switch`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ reason })
+                });
+                
+                if (response.ok) {
+                    log('emergency', `✅ Kill switch activated`, 'success');
+                } else {
+                    log('emergency', `❌ Kill switch failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log('emergency', `❌ Kill switch error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Reset kill switch
+        async function resetKillSwitch() {
+            try {
+                log('emergency', 'Resetting kill switch...');
+                
+                const response = await fetch(`${DEXIMIND_UI_CONFIG.apiUrl}/kill-switch/reset`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    log('emergency', `✅ Kill switch reset`, 'success');
+                } else {
+                    log('emergency', `❌ Kill switch reset failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log('emergency', `❌ Kill switch reset error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Logging functions
+        function log(section, message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById(`${section}-log`);
+            if (logElement) {
+                const logEntry = document.createElement('div');
+                logEntry.innerHTML = `<span style="color: #666;">[${timestamp}]</span> ${message}`;
+                if (type === 'success') logEntry.style.color = '#155724';
+                if (type === 'error') logEntry.style.color = '#721c24';
+                if (type === 'warning') logEntry.style.color = '#856404';
+                logElement.appendChild(logEntry);
+                logElement.scrollTop = logElement.scrollHeight;
+            }
+            console.log(`[${section}] ${message}`);
+        }
+        
+        function updateConnectionStatus(status, type) {
+            const statusElement = document.getElementById('connection-status');
+            if (statusElement) {
+                statusElement.textContent = status;
+                statusElement.className = `status ${type}`;
+                
+                if (type === 'success') {
+                    statusElement.innerHTML = `✅ ${status}`;
+                } else if (type === 'error') {
+                    statusElement.innerHTML = `❌ ${status}`;
+                } else if (type === 'warning') {
+                    statusElement.innerHTML = `⚠️ ${status}`;
+                }
+            }
+        }
+        
+        // Make functions global for button onclick handlers
+        window.testConnection = testConnection;
+        window.testWebSocket = testWebSocket;
+        window.createTestTask = createTestTask;
+        window.listTasks = listTasks;
+        window.checkSystemStatus = checkSystemStatus;
+        window.getMetrics = getMetrics;
+        window.testKillSwitch = testKillSwitch;
+        window.resetKillSwitch = resetKillSwitch;
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initConnection);
+    })();
+    </script>
+</body>
+</html>
